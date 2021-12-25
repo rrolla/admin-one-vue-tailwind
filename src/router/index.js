@@ -21,7 +21,7 @@ const routes = [
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
     // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "media" */ '../views/Media.vue')
+    component: () => import(/* webpackChunkName: "media-list" */ '../views/media/Media.vue')
   },
   {
     meta: {
@@ -30,6 +30,14 @@ const routes = [
     path: '/streams',
     name: 'streams',
     component: () => import(/* webpackChunkName: "streams" */ '../views/streams/Streams.vue')
+  },
+  {
+    meta: {
+      title: 'Stream create'
+    },
+    path: '/streams/create',
+    name: 'streamCreate',
+    component: () => import(/* webpackChunkName: "stream-create" */ '../views/streams/StreamCreate.vue')
   },
   {
     meta: {

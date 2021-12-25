@@ -11,20 +11,23 @@ import Control from '../../components/Control.vue'
 import Divider from '../../components/Divider.vue'
 import JbButton from '../../components/JbButton.vue'
 import JbButtons from '../../components/JbButtons.vue'
-import {useRoute} from 'vue-router'
+import {useRouter} from 'vue-router'
 import {useStore} from "vuex";
 import axios from 'axios'
 
-const titleStack = ref(['Admin', 'Streams', 'Stream edit'])
-const route = useRoute()
+const titleStack = ref(['Admin', 'Streams', 'Stream create'])
+const router = useRouter()
 const store = useStore()
 
-const streamId = route.params.streamId;
-store.dispatch('fetchStream', streamId)
-// const stream = computed(() => store.state.stream)
-
 const form = reactive({
-  stream: computed(() => store.state.stream),
+  stream: {
+    title: undefined,
+    url: undefined,
+    slug: undefined,
+    secret_key: undefined,
+    is_live: undefined,
+    is_recording: undefined,
+  },
 })
 
 const switches = reactive({
@@ -50,13 +53,15 @@ const submit = () => {
     is_recording: form.stream.is_recording,
   };
 
-  axios.patch(`/api/streams/${streamId}`, payload,{withCredentials: true});
+  axios.post(`/api/streams/`, payload).then((response) => {
+    router.push({path: '/streams'});
+  });
 }
 </script>
 
 <template>
   <title-bar :title-stack="titleStack" />
-  <hero-bar>Stream edit</hero-bar>
+  <hero-bar>Stream create</hero-bar>
 
   <main-section>
     <card-component
@@ -68,6 +73,9 @@ const submit = () => {
       <field label="Title">
         <control
           v-model="form.stream.title"
+          type="text"
+          autocomplete="on"
+          name="title"
         />
       </field>
 
@@ -75,6 +83,8 @@ const submit = () => {
         <control
           v-model="form.stream.url"
           type="url"
+          autocomplete="on"
+          name="url"
         />
       </field>
 
@@ -82,6 +92,8 @@ const submit = () => {
         <control
           v-model="form.stream.slug"
           type="text"
+          autocomplete="on"
+          name="slug"
         />
       </field>
 
@@ -89,6 +101,8 @@ const submit = () => {
         <control
           v-model="form.stream.secret_key"
           type="text"
+          autocomplete="on"
+          name="secret_key"
         />
       </field>
 
@@ -101,7 +115,9 @@ const submit = () => {
         <control
           v-model="form.stream.description"
           type="textarea"
+          autocomplete="on"
           placeholder="Stream description"
+          name="description"
         />
       </field>
 

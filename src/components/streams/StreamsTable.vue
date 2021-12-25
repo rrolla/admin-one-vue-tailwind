@@ -1,11 +1,27 @@
 <script setup>
 import {computed, ref} from 'vue'
 import {useStore} from 'vuex'
-import {mdiEye, mdiTrashCan} from '@mdi/js'
-import CheckboxCell from '@/components/CheckboxCell.vue'
-import Level from '@/components/Level.vue'
-import JbButtons from '@/components/JbButtons.vue'
-import JbButton from '@/components/JbButton.vue'
+import {mdiPencil, mdiTrashCan} from '@mdi/js'
+import CheckboxCell from '../../components/CheckboxCell.vue'
+import Level from '../../components/Level.vue'
+import JbButtons from '../../components/JbButtons.vue'
+import JbButton from '../../components/JbButton.vue'
+import ModalBox from '../../components/ModalBox.vue'
+import axios from 'axios'
+
+const confirmDelete = ref(null)
+const confirmDeleteId = ref(null)
+const confirmDeleteTitle = ref(null)
+
+const confirmDeleteModal = (stream) => {
+  confirmDelete.value = 'confirm';
+  confirmDeleteId.value = stream.id;
+  confirmDeleteTitle.value = stream.title;
+}
+
+const confirmedDelete = () => {
+  axios.delete(`/api/streams/${confirmDeleteId.value}`).then(() => store.dispatch('fetchStreams'))
+}
 
 const props = defineProps({
   checkable: Boolean
@@ -13,13 +29,7 @@ const props = defineProps({
 
 const store = useStore()
 
-const darkMode = computed(() => store.state.darkMode)
-
-const items = computed(() => store.state.media)
-
-const isModalActive = ref(false)
-
-const isModalDangerActive = ref(false)
+const items = computed(() => store.state.streams)
 
 const perPage = ref(10)
 
@@ -88,40 +98,48 @@ const checked = (isChecked, client) => {
         <th>ID</th>
         <th>Title</th>
         <th>Url</th>
-        <th>Type</th>
+        <th>Viewer count</th>
+        <th>Live</th>
+        <th>Recording</th>
         <th>Created</th>
         <th />
       </tr>
     </thead>
     <tbody>
       <tr
-        v-for="media in items.data"
-        :key="media.id"
+        v-for="stream in items.data"
+        :key="stream.id"
       >
         <checkbox-cell
           v-if="checkable"
-          @checked="checked($event, media)"
+          @checked="checked($event, stream)"
         />
-        <td class="image-cell" style="width: 64px;">
-          <img :src="media.poster" class="image" width="64" height="64"/>
+        <td class="image-cell">
+          <img :src="stream.poster" class="image" width="64" height="64"/>
         </td>
         <td data-label="ID">
-          {{ media.id }}
+          {{ stream.id }}
         </td>
         <td data-label="Title">
-          {{ media.title }}
+          {{ stream.title }}
         </td>
         <td data-label="Url">
-          {{ media.url }}
+          {{ stream.url }}
         </td>
-        <td data-label="Type">
-          {{ media.type }}
+        <td data-label="Viewer count">
+          {{ stream.viewer_count }}
+        </td>
+        <td data-label="Live">
+          {{ stream.is_live ? 'Yes' : 'No' }}
+        </td>
+        <td data-label="Recording">
+          {{ stream.is_recording ? 'Yes' : 'No' }}
         </td>
         <td data-label="Created">
           <small
             class="text-gray-500 dark:text-gray-400"
-            :title="media.created_at"
-          >{{ media.created_at }}</small>
+            :title="stream.created_at"
+          >{{ stream.created_at }}</small>
         </td>
         <td class="actions-cell">
           <jb-buttons
@@ -129,16 +147,22 @@ const checked = (isChecked, client) => {
             no-wrap
           >
             <jb-button
-              color="success"
-              :icon="mdiEye"
+              color="info"
+              :icon="mdiPencil"
               small
-              @click="isModalActive = true"
+              :to="`/streams/${stream.id}/edit`"
             />
+<!--            <jb-button-->
+<!--              color="success"-->
+<!--              :icon="mdiEye"-->
+<!--              small-->
+<!--              @click="isModalActive = true"-->
+<!--            />-->
             <jb-button
               color="danger"
               :icon="mdiTrashCan"
               small
-              @click="isModalDangerActive = true"
+              @click="confirmDeleteModal(stream)"
             />
           </jb-buttons>
         </td>
@@ -161,4 +185,14 @@ const checked = (isChecked, client) => {
       <small>Page {{ currentPageHuman }} of {{ numPages }}</small>
     </level>
   </div>
+
+  <modal-box
+    v-model="confirmDelete"
+    title="Please confirm action"
+    button-label="Confirm"
+    has-cancel
+    @confirm="confirmedDelete"
+  >
+    <p>Really want to delete {{ confirmDeleteTitle }}?</p>
+  </modal-box>
 </template>

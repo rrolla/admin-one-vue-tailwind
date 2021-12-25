@@ -1,11 +1,11 @@
 <script setup>
 import {computed, ref} from 'vue'
 import {useStore} from 'vuex'
-import {mdiPencil, mdiEye, mdiTrashCan} from '@mdi/js'
-import CheckboxCell from '@/components/CheckboxCell.vue'
-import Level from '@/components/Level.vue'
-import JbButtons from '@/components/JbButtons.vue'
-import JbButton from '@/components/JbButton.vue'
+import {mdiEye, mdiTrashCan} from '@mdi/js'
+import CheckboxCell from '../../components/CheckboxCell.vue'
+import Level from '../../components/Level.vue'
+import JbButtons from '../../components/JbButtons.vue'
+import JbButton from '../../components/JbButton.vue'
 
 const props = defineProps({
   checkable: Boolean
@@ -15,7 +15,7 @@ const store = useStore()
 
 const darkMode = computed(() => store.state.darkMode)
 
-const items = computed(() => store.state.streams)
+const items = computed(() => store.state.media)
 
 const isModalActive = ref(false)
 
@@ -88,60 +88,46 @@ const checked = (isChecked, client) => {
         <th>ID</th>
         <th>Title</th>
         <th>Url</th>
-        <th>Viewer count</th>
-        <th>Live</th>
-        <th>Recording</th>
+        <th>Type</th>
         <th>Created</th>
         <th />
       </tr>
     </thead>
     <tbody>
       <tr
-        v-for="stream in items.data"
-        :key="stream.id"
+        v-for="media in items.data"
+        :key="media.id"
       >
         <checkbox-cell
           v-if="checkable"
-          @checked="checked($event, stream)"
+          @checked="checked($event, media)"
         />
-        <td class="image-cell">
-          <img :src="stream.poster" class="image" width="64" height="64"/>
+        <td class="image-cell" style="width: 64px;">
+          <img :src="media.poster" class="image" width="64" height="64"/>
         </td>
         <td data-label="ID">
-          {{ stream.id }}
+          {{ media.id }}
         </td>
         <td data-label="Title">
-          {{ stream.title }}
+          {{ media.title }}
         </td>
         <td data-label="Url">
-          {{ stream.url }}
+          {{ media.url }}
         </td>
-        <td data-label="Viewer count">
-          {{ stream.viewer_count }}
-        </td>
-        <td data-label="Live">
-          {{ stream.is_live ? 'Yes' : 'No' }}
-        </td>
-        <td data-label="Recording">
-          {{ stream.is_recording ? 'Yes' : 'No' }}
+        <td data-label="Type">
+          {{ media.type }}
         </td>
         <td data-label="Created">
           <small
             class="text-gray-500 dark:text-gray-400"
-            :title="stream.created_at"
-          >{{ stream.created_at }}</small>
+            :title="media.created_at"
+          >{{ media.created_at }}</small>
         </td>
         <td class="actions-cell">
           <jb-buttons
             type="justify-start lg:justify-end"
             no-wrap
           >
-            <jb-button
-              color="info"
-              :icon="mdiPencil"
-              small
-              :to="`/streams/${stream.id}/edit`"
-            />
             <jb-button
               color="success"
               :icon="mdiEye"

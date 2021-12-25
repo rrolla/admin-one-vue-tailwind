@@ -1,26 +1,13 @@
 <script setup>
-import { computed, ref, onMounted } from 'vue'
-import { useStore } from 'vuex'
-import {
-  mdiAccountMultiple,
-  mdiCartOutline,
-  mdiChartTimelineVariant,
-  mdiFinance,
-  mdiMonitorCellphone,
-  mdiReload,
-  mdiGithub,
-  mdiChartPie
-} from '@mdi/js'
+import {computed, onMounted, reactive, ref} from 'vue'
+import {useStore} from 'vuex'
+import {mdiAccountMultiple, mdiCartOutline, mdiChartPie, mdiChartTimelineVariant, mdiFinance, mdiReload} from '@mdi/js'
 import * as chartConfig from '@/components/Charts/chart.config.js'
-import LineChart from '@/components/Charts/LineChart.vue'
 import MainSection from '@/components/MainSection.vue'
 import TitleBar from '@/components/TitleBar.vue'
 import HeroBar from '@/components/HeroBar.vue'
 import CardWidget from '@/components/CardWidget.vue'
 import CardComponent from '@/components/CardComponent.vue'
-import ClientsTable from '@/components/ClientsTable.vue'
-import Notification from '@/components/Notification.vue'
-import JbButton from '@/components/JbButton.vue'
 import CardTransactionBar from '@/components/CardTransactionBar.vue'
 import CardClientBar from '@/components/CardClientBar.vue'
 import TitleSubBar from '@/components/TitleSubBar.vue'
@@ -44,33 +31,15 @@ const clientBarItems = computed(() => store.state.clients.slice(0, 3))
 const transactionBarItems = computed(() => store.state.history.slice(0, 3))
 
 const darkMode = computed(() => store.state.darkMode)
+
+const matomo = reactive(window.matomo);
+
 </script>
 
 <template>
   <title-bar :title-stack="titleStack" />
   <hero-bar>Dashboard</hero-bar>
   <main-section>
-    <notification
-      color="info"
-      :icon="mdiGithub"
-    >
-      Please star this project on
-      <a
-        href="https://github.com/justboil/admin-one-vue-tailwind"
-        class="underline"
-        target="_blank"
-      >GitHub</a>
-      <template #right>
-        <jb-button
-          href="https://github.com/justboil/admin-one-vue-tailwind"
-          :icon="mdiGithub"
-          :outline="darkMode"
-          label="GitHub"
-          target="_blank"
-          small
-        />
-      </template>
-    </notification>
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
       <card-widget
         trend="12%"
@@ -125,44 +94,65 @@ const darkMode = computed(() => store.state.darkMode)
       </div>
     </div>
 
-    <title-sub-bar
-      :icon="mdiChartPie"
-      title="Trends overview"
-    />
-
     <card-component
-      title="Performance"
+      title="Stats"
       :icon="mdiFinance"
       :header-icon="mdiReload"
       class="mb-6"
       @header-icon-click="fillChartData"
     >
-      <div v-if="chartData">
-        <line-chart
-          :data="chartData"
-          class="h-96"
-        />
+<!--      <div v-if="chartData">-->
+<!--        <line-chart-->
+<!--          :data="chartData"-->
+<!--          class="h-96"-->
+<!--        />-->
+<!--      </div>-->
+      <div id="widgetIframe" class="grid grid-cols-4">
+        <div>
+          <iframe
+            width="100%"
+            height="350"
+            :src="`${matomo.url}index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=Live&actionToWidgetize=getSimpleLastVisitCount&idSite=${matomo.id}&period=day&date=yesterday&disableLink=1&widget=1&token_auth=${matomo.token}`"
+            scrolling="yes"
+            frameborder="0"
+            marginheight="0"
+            marginwidth="0">
+          </iframe>
+        </div>
+        <div>
+          <iframe
+            width="100%"
+            height="350"
+            :src="`${matomo.url}index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=UserCountryMap&actionToWidgetize=realtimeMap&idSite=${matomo.id}&period=day&date=yesterday&disableLink=1&widget=1&token_auth=${matomo.token}`"
+            scrolling="yes"
+            frameborder="0"
+            marginheight="0"
+            marginwidth="0">
+          </iframe>
+        </div>
+        <div>
+          <iframe
+            width="100%"
+            height="350"
+            :src="`${matomo.url}index.php?module=Widgetize&action=iframe&disableLink=0&widget=1&moduleToWidgetize=Live&actionToWidgetize=widget&idSite=${matomo.id}&period=day&date=yesterday&disableLink=1&widget=1&token_auth=${matomo.token}`"
+            scrolling="yes"
+            frameborder="0"
+            marginheight="0"
+            marginwidth="0">
+          </iframe>
+        </div>
+        <div>
+          <iframe
+            width="100%"
+            height="350"
+            :src="`${matomo.url}index.php?module=Widgetize&action=iframe&secondaryDimension=eventAction&disableLink=0&widget=1&moduleToWidgetize=Events&actionToWidgetize=getName&idSite=${matomo.id}&period=day&date=yesterday&disableLink=1&widget=1&token_auth=${matomo.token}`"
+            scrolling="yes"
+            frameborder="0"
+            marginheight="0"
+            marginwidth="0">
+          </iframe>
+        </div>
       </div>
-    </card-component>
-
-    <title-sub-bar
-      :icon="mdiAccountMultiple"
-      title="Clients"
-    />
-
-    <notification
-      color="info"
-      :icon="mdiMonitorCellphone"
-    >
-      <b>Responsive table.</b> Collapses on mobile
-    </notification>
-
-    <card-component
-      :icon="mdiMonitorCellphone"
-      title="Responsive table"
-      has-table
-    >
-      <clients-table />
     </card-component>
   </main-section>
 </template>

@@ -20,7 +20,7 @@ export default [
       label: 'Dashboard'
     },
     {
-      href: 'feeds',
+      href: '/climbing-goose/feeds',
       label: 'Feeds',
       icon: mdiMonitorShimmer,
       target: '_blank'
@@ -36,58 +36,58 @@ export default [
       label: 'Streams'
     },
   ],
-  'Examples',
-  [
-    {
-      to: '/tables',
-      label: 'Tables',
-      icon: mdiTable,
-      updateMark: true
-    },
-    {
-      to: '/forms',
-      label: 'Forms',
-      icon: mdiSquareEditOutline
-    },
-    {
-      to: '/ui',
-      label: 'UI',
-      icon: mdiTelevisionGuide
-    },
-    {
-      to: '/responsive',
-      label: 'Responsive',
-      icon: mdiResponsive
-    },
-    {
-      to: '/profile',
-      label: 'Profile',
-      icon: mdiAccountCircle
-    },
-    {
-      to: '/login',
-      label: 'Login',
-      icon: mdiLock
-    },
-    {
-      to: '/error',
-      label: 'Error',
-      icon: mdiAlertCircle
-    },
-    {
-      label: 'Submenus',
-      subLabel: 'Submenus Example',
-      icon: mdiViewList,
-      menu: [
-        {
-          label: 'Sub-item One'
-        },
-        {
-          label: 'Sub-item Two'
-        }
-      ]
-    }
-  ],
+  // 'Examples',
+  // [
+  //   {
+  //     to: '/tables',
+  //     label: 'Tables',
+  //     icon: mdiTable,
+  //     updateMark: true
+  //   },
+  //   {
+  //     to: '/forms',
+  //     label: 'Forms',
+  //     icon: mdiSquareEditOutline
+  //   },
+  //   {
+  //     to: '/ui',
+  //     label: 'UI',
+  //     icon: mdiTelevisionGuide
+  //   },
+  //   {
+  //     to: '/responsive',
+  //     label: 'Responsive',
+  //     icon: mdiResponsive
+  //   },
+  //   {
+  //     to: '/profile',
+  //     label: 'Profile',
+  //     icon: mdiAccountCircle
+  //   },
+  //   {
+  //     to: '/login',
+  //     label: 'Login',
+  //     icon: mdiLock
+  //   },
+  //   {
+  //     to: '/error',
+  //     label: 'Error',
+  //     icon: mdiAlertCircle
+  //   },
+  //   {
+  //     label: 'Submenus',
+  //     subLabel: 'Submenus Example',
+  //     icon: mdiViewList,
+  //     menu: [
+  //       {
+  //         label: 'Sub-item One'
+  //       },
+  //       {
+  //         label: 'Sub-item Two'
+  //       }
+  //     ]
+  //   }
+  // ],
   'Tools',
   [
     {

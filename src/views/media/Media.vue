@@ -1,10 +1,10 @@
 <script setup>
 import {ref} from 'vue'
-import MainSection from '@/components/MainSection.vue'
-import CardComponent from '@/components/CardComponent.vue'
-import TitleBar from '@/components/TitleBar.vue'
-import HeroBar from '@/components/HeroBar.vue'
-import MediaTable from '../components/MediaTable.vue'
+import MainSection from '../../components/MainSection.vue'
+import CardComponent from '../../components/CardComponent.vue'
+import TitleBar from '../../components/TitleBar.vue'
+import HeroBar from '../../components/HeroBar.vue'
+import MediaTable from '../../components/media/MediaTable.vue'
 import {useStore} from "vuex";
 
 const titleStack = ref(['Admin', 'Media'])

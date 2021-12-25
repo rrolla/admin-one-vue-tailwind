@@ -138,8 +138,6 @@ export default createStore({
     async fetchStream ({commit}, streamId) {
       const response = await axios.get(`/api/streams/${streamId}`, {withCredentials: true});
 
-      console.log(response.data.data);
-
       return commit("UPDATE_STREAM", response.data.data);
     },
   },
