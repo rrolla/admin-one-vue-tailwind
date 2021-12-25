@@ -8,8 +8,8 @@ import { darkModeKey } from '@/config.js'
 import './css/main.css'
 
 /* Fetch sample data */
-store.dispatch('fetch', 'clients')
-store.dispatch('fetch', 'history')
+// store.dispatch('fetch', 'clients')
+// store.dispatch('fetch', 'history')
 
 /* Dark mode */
 const localStorageDarkModeValue = localStorage.getItem(darkModeKey)

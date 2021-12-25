@@ -24,7 +24,11 @@ export default createStore({
 
     /* Sample data (commonly used) */
     clients: [],
-    history: []
+    history: [],
+
+    media: {},
+    streams: {},
+    stream: {},
   },
   mutations: {
     /* A fit-them-all commit */
@@ -43,7 +47,20 @@ export default createStore({
       if (payload.avatar) {
         state.userAvatar = payload.avatar
       }
-    }
+    },
+
+    UPDATE_MEDIA(state, media) {
+      state.media = media;
+    },
+
+    UPDATE_STREAMS(state, streams) {
+      state.streams = streams;
+    },
+
+    UPDATE_STREAM(state, stream) {
+      state.stream = stream;
+    },
+
   },
   actions: {
     asideMobileToggle ({ commit, state }, payload = null) {
@@ -102,9 +119,29 @@ export default createStore({
           }
         })
         .catch(error => {
-          alert(error.message)
+          // alert(error.message)
         })
-    }
+    },
+
+    async fetchMedia ({commit}) {
+      const response = await axios.get(`/api/media`, {withCredentials: true});
+
+      return commit("UPDATE_MEDIA", response.data);
+    },
+
+    async fetchStreams ({commit}) {
+      const response = await axios.get(`/api/streams`, {withCredentials: true});
+
+      return commit("UPDATE_STREAMS", response.data);
+    },
+
+    async fetchStream ({commit}, streamId) {
+      const response = await axios.get(`/api/streams/${streamId}`, {withCredentials: true});
+
+      console.log(response.data.data);
+
+      return commit("UPDATE_STREAM", response.data.data);
+    },
   },
   modules: {
   }

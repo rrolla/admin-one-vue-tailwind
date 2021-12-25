@@ -14,13 +14,37 @@ const routes = [
   },
   {
     meta: {
+      title: 'Media'
+    },
+    path: '/media',
+    name: 'media',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "media" */ '../views/Media.vue')
+  },
+  {
+    meta: {
+      title: 'Streams'
+    },
+    path: '/streams',
+    name: 'streams',
+    component: () => import(/* webpackChunkName: "streams" */ '../views/streams/Streams.vue')
+  },
+  {
+    meta: {
+      title: 'Stream edit'
+    },
+    path: '/streams/:streamId/edit',
+    name: 'streamEdit',
+    component: () => import(/* webpackChunkName: "stream-edit" */ '../views/streams/StreamEdit.vue')
+  },
+  {
+    meta: {
       title: 'Tables'
     },
     path: '/tables',
     name: 'tables',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "tables" */ '@/views/Tables.vue')
   },
   {
