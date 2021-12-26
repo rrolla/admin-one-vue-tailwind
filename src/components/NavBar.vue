@@ -154,7 +154,7 @@ const menuOpenLg = () => {
               />
             </nav-bar-item>
             <nav-bar-menu-divider />
-            <nav-bar-item>
+            <nav-bar-item href="/auth/logout">
               <nav-bar-item-label
                 :icon="mdiLogout"
                 label="Log Out"
@@ -173,18 +173,7 @@ const menuOpenLg = () => {
             is-desktop-icon-only
           />
         </nav-bar-item>
-        <nav-bar-item
-          href="https://github.com/justboil/admin-one-vue-tailwind"
-          has-divider
-          is-desktop-icon-only
-        >
-          <nav-bar-item-label
-            :icon="mdiGithub"
-            label="GitHub"
-            is-desktop-icon-only
-          />
-        </nav-bar-item>
-        <nav-bar-item is-desktop-icon-only>
+        <nav-bar-item is-desktop-icon-only href="/auth/logout">
           <nav-bar-item-label
             :icon="mdiLogout"
             label="Log out"

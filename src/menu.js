@@ -35,6 +35,11 @@ export default [
       icon: mdiTelevisionGuide,
       label: 'Streams'
     },
+    {
+      href: '/',
+      icon: mdiTelevisionGuide,
+      label: 'Site'
+    },
   ],
   // 'Examples',
   // [
@@ -103,8 +108,14 @@ export default [
       target: '_blank'
     },
     {
-      href: '/supervisor',
+      href: '/supervisor/',
       label: 'Supervisor',
+      icon: mdiMonitorShimmer,
+      target: '_blank'
+    },
+    {
+      href: '/status?html&full',
+      label: 'PHP fpm',
       icon: mdiMonitorShimmer,
       target: '_blank'
     },
