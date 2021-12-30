@@ -20,8 +20,13 @@ const fillChartData = () => {
   chartData.value = chartConfig.sampleChartData()
 }
 
+const viewers = ref(null)
+const guests = ref(null)
+
 onMounted(() => {
   fillChartData()
+  viewers.value = computed(() => store.state.streamsStats.find((stat) => stat.user_id != null))
+  guests.value = computed(() => store.state.streamsStats.find((stat) => stat.user_id == null))
 })
 
 const store = useStore()
@@ -34,38 +39,44 @@ const darkMode = computed(() => store.state.darkMode)
 
 const matomo = reactive(window.matomo);
 
+store.dispatch('fetchStreamsStats');
+const streamsStats = computed(() => store.state.streamsStats)
+
+const intervalMinutes = 1;
+const intervalID = ref(null);
+const startInterval = () => {
+  intervalID.value = setInterval(() => store.dispatch('fetchStreamsStats'), intervalMinutes * 60 * 1000);
+}
+
+startInterval()
+
 </script>
 
 <template>
   <title-bar :title-stack="titleStack" />
   <hero-bar>Dashboard</hero-bar>
+
+  {{ streamsStats }}
+
   <main-section>
     <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
       <card-widget
-        trend="12%"
-        trend-type="up"
         color="text-green-500"
         :icon="mdiAccountMultiple"
-        :number="512"
-        label="Clients"
+        :number="0"
+        label="Viewers"
       />
       <card-widget
-        trend="12%"
-        trend-type="down"
         color="text-blue-500"
-        :icon="mdiCartOutline"
-        :number="7770"
-        prefix="$"
-        label="Sales"
+        :icon="mdiChartTimelineVariant"
+        :number="0"
+        label="Guests"
       />
       <card-widget
-        trend="Overflow"
-        trend-type="alert"
         color="text-red-500"
         :icon="mdiChartTimelineVariant"
-        :number="256"
-        suffix="%"
-        label="Performance"
+        :number="0"
+        label="Total"
       />
     </div>
 

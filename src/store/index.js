@@ -29,6 +29,7 @@ export default createStore({
     media: {},
     streams: {},
     stream: {},
+    streamsStats: {},
   },
   mutations: {
     /* A fit-them-all commit */
@@ -59,6 +60,10 @@ export default createStore({
 
     UPDATE_STREAM(state, stream) {
       state.stream = stream;
+    },
+
+    UPDATE_STREAMS_STATS(state, streamsStats) {
+      state.streamsStats = streamsStats;
     },
 
   },
@@ -139,6 +144,12 @@ export default createStore({
       const response = await axios.get(`/api/streams/${streamId}`, {withCredentials: true});
 
       return commit("UPDATE_STREAM", response.data.data);
+    },
+
+    async fetchStreamsStats ({commit}) {
+      const response = await axios.get(`/api/streams/stats`, {withCredentials: true});
+
+      return commit("UPDATE_STREAMS_STATS", response.data.data);
     },
   },
   modules: {
