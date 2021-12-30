@@ -59,26 +59,26 @@ startInterval()
   {{ streamsStats }}
 
   <main-section>
-    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
-      <card-widget
-        color="text-green-500"
-        :icon="mdiAccountMultiple"
-        :number="0"
-        label="Viewers"
-      />
-      <card-widget
-        color="text-blue-500"
-        :icon="mdiChartTimelineVariant"
-        :number="0"
-        label="Guests"
-      />
-      <card-widget
-        color="text-red-500"
-        :icon="mdiChartTimelineVariant"
-        :number="0"
-        label="Total"
-      />
-    </div>
+<!--    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">-->
+<!--      <card-widget-->
+<!--        color="text-green-500"-->
+<!--        :icon="mdiAccountMultiple"-->
+<!--        :number="0"-->
+<!--        label="Viewers"-->
+<!--      />-->
+<!--      <card-widget-->
+<!--        color="text-blue-500"-->
+<!--        :icon="mdiChartTimelineVariant"-->
+<!--        :number="0"-->
+<!--        label="Guests"-->
+<!--      />-->
+<!--      <card-widget-->
+<!--        color="text-red-500"-->
+<!--        :icon="mdiChartTimelineVariant"-->
+<!--        :number="0"-->
+<!--        label="Total"-->
+<!--      />-->
+<!--    </div>-->
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
       <div class="flex flex-col justify-between">
