@@ -1,84 +1,28 @@
-<script setup>
-import {computed, onMounted, reactive, ref} from 'vue'
-import {useStore} from 'vuex'
-import {mdiAccountMultiple, mdiCartOutline, mdiChartPie, mdiChartTimelineVariant, mdiFinance, mdiReload} from '@mdi/js'
-import * as chartConfig from '@/components/Charts/chart.config.js'
-import MainSection from '@/components/MainSection.vue'
-import TitleBar from '@/components/TitleBar.vue'
-import HeroBar from '@/components/HeroBar.vue'
-import CardWidget from '@/components/CardWidget.vue'
-import CardComponent from '@/components/CardComponent.vue'
-import CardTransactionBar from '@/components/CardTransactionBar.vue'
-import CardClientBar from '@/components/CardClientBar.vue'
-import TitleSubBar from '@/components/TitleSubBar.vue'
-
-const titleStack = ref(['Admin', 'Dashboard'])
-
-const chartData = ref(null)
-
-const fillChartData = () => {
-  chartData.value = chartConfig.sampleChartData()
-}
-
-const viewers = ref(null)
-const guests = ref(null)
-
-onMounted(() => {
-  fillChartData()
-  viewers.value = computed(() => store.state.streamsStats.find((stat) => stat.user_id != null))
-  guests.value = computed(() => store.state.streamsStats.find((stat) => stat.user_id == null))
-})
-
-const store = useStore()
-
-const clientBarItems = computed(() => store.state.clients.slice(0, 3))
-
-const transactionBarItems = computed(() => store.state.history.slice(0, 3))
-
-const darkMode = computed(() => store.state.darkMode)
-
-const matomo = reactive(window.matomo);
-
-store.dispatch('fetchStreamsStats');
-const streamsStats = computed(() => store.state.streamsStats)
-
-const intervalMinutes = 1;
-const intervalID = ref(null);
-const startInterval = () => {
-  intervalID.value = setInterval(() => store.dispatch('fetchStreamsStats'), intervalMinutes * 60 * 1000);
-}
-
-startInterval()
-
-</script>
-
 <template>
-  <title-bar :title-stack="titleStack" />
+  <title-bar :title-stack="titleStack"/>
   <hero-bar>Dashboard</hero-bar>
 
-  {{ streamsStats }}
-
   <main-section>
-<!--    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">-->
-<!--      <card-widget-->
-<!--        color="text-green-500"-->
-<!--        :icon="mdiAccountMultiple"-->
-<!--        :number="0"-->
-<!--        label="Viewers"-->
-<!--      />-->
-<!--      <card-widget-->
-<!--        color="text-blue-500"-->
-<!--        :icon="mdiChartTimelineVariant"-->
-<!--        :number="0"-->
-<!--        label="Guests"-->
-<!--      />-->
-<!--      <card-widget-->
-<!--        color="text-red-500"-->
-<!--        :icon="mdiChartTimelineVariant"-->
-<!--        :number="0"-->
-<!--        label="Total"-->
-<!--      />-->
-<!--    </div>-->
+    <div class="grid grid-cols-1 gap-6 lg:grid-cols-3 mb-6">
+      <card-widget
+        color="text-red-500"
+        :icon="mdiChartTimelineVariant"
+        :number="stats.total"
+        label="Total"
+      />
+      <card-widget
+        color="text-green-500"
+        :icon="mdiAccountMultiple"
+        :number="stats.viewers"
+        label="Viewers"
+      />
+      <card-widget
+        color="text-blue-500"
+        :icon="mdiChartTimelineVariant"
+        :number="stats.guests"
+        label="Guests"
+      />
+    </div>
 
     <div class="grid grid-cols-1 xl:grid-cols-2 gap-6 mb-6">
       <div class="flex flex-col justify-between">
@@ -112,12 +56,12 @@ startInterval()
       class="mb-6"
       @header-icon-click="fillChartData"
     >
-<!--      <div v-if="chartData">-->
-<!--        <line-chart-->
-<!--          :data="chartData"-->
-<!--          class="h-96"-->
-<!--        />-->
-<!--      </div>-->
+      <!--      <div v-if="chartData">-->
+      <!--        <line-chart-->
+      <!--          :data="chartData"-->
+      <!--          class="h-96"-->
+      <!--        />-->
+      <!--      </div>-->
       <div id="widgetIframe" class="grid grid-cols-4">
         <div>
           <iframe
@@ -167,3 +111,88 @@ startInterval()
     </card-component>
   </main-section>
 </template>
+
+<script>
+
+import {computed, onMounted, reactive, ref} from 'vue'
+import {useStore} from 'vuex'
+import {mdiAccountMultiple, mdiCartOutline, mdiChartPie, mdiChartTimelineVariant, mdiFinance, mdiReload} from '@mdi/js'
+import * as chartConfig from '../components/Charts/chart.config.js'
+import MainSection from '../components/MainSection.vue'
+import TitleBar from '../components/TitleBar.vue'
+import HeroBar from '../components/HeroBar.vue'
+import CardWidget from '../components/CardWidget.vue'
+import CardComponent from '../components/CardComponent.vue'
+import CardTransactionBar from '../components/CardTransactionBar.vue'
+import CardClientBar from '../components/CardClientBar.vue'
+import TitleSubBar from '../components/TitleSubBar.vue'
+import {isEmpty} from "lodash";
+
+export default {
+  setup() {
+
+    const titleStack = ref(['Admin', 'Dashboard'])
+    const chartData = ref(null)
+
+    const fillChartData = () => {
+      chartData.value = chartConfig.sampleChartData()
+    }
+
+    onMounted(() => {
+      fillChartData()
+    })
+
+    const store = useStore()
+    const clientBarItems = computed(() => store.state.clients.slice(0, 3))
+    const transactionBarItems = computed(() => store.state.history.slice(0, 3))
+    const darkMode = computed(() => store.state.darkMode)
+    const matomo = reactive(window.matomo);
+
+    store.dispatch('fetchStreamsStats');
+    const stats = computed(() => {
+      const viewers = !isEmpty(store.state.streamsStats) ? store.state.streamsStats.find((stat) => stat.users === 'viewers')?.count : 0;
+      const guests = !isEmpty(store.state.streamsStats) ? store.state.streamsStats.find((stat) => stat.users === 'guests')?.count : 0;
+      return {
+        'viewers': viewers,
+        'guests': guests,
+        'total': viewers + guests,
+      }
+    });
+
+    const intervalMinutes = 1;
+    const intervalID = ref(null);
+    const startInterval = () => {
+      intervalID.value = setInterval(() => store.dispatch('fetchStreamsStats'), intervalMinutes * 60 * 1000);
+    }
+
+    startInterval()
+
+    return {
+      clientBarItems,
+      transactionBarItems,
+      darkMode,
+      titleStack,
+      mdiAccountMultiple,
+      mdiCartOutline,
+      mdiChartPie,
+      mdiChartTimelineVariant,
+      mdiFinance,
+      mdiReload,
+      stats,
+      matomo,
+    }
+  },
+
+  components: {
+    MainSection,
+    CardWidget,
+    TitleBar,
+    HeroBar,
+    CardComponent,
+    CardTransactionBar,
+    CardClientBar,
+    TitleSubBar,
+  },
+}
+</script>
+
