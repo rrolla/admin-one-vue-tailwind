@@ -119,5 +119,11 @@ export default [
       icon: mdiMonitorShimmer,
       target: '_blank'
     },
+    {
+      href: '/desired-mackerel/',
+      label: 'PMA',
+      icon: mdiMonitorShimmer,
+      target: '_blank'
+    },
   ]
 ]
