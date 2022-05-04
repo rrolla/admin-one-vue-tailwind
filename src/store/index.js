@@ -29,8 +29,15 @@ export default createStore({
     media: {},
     streams: {},
     stream: {},
-    streamsStats: {},
+    streamsStats: [],
   },
+
+  getters: {
+    streamStatViewers: state => state.streamsStats.find((stat) => stat.users === 'viewers')?.count ?? 0,
+    streamStatGuest: state => state.streamsStats.find((stat) => stat.users === 'guests')?.count ?? 0,
+    streamStatTotal: (state, getters) => getters.streamStatViewers + getters.streamStatGuest,
+  },
+
   mutations: {
     /* A fit-them-all commit */
     basic (state, payload) {
@@ -67,6 +74,7 @@ export default createStore({
     },
 
   },
+
   actions: {
     asideMobileToggle ({ commit, state }, payload = null) {
       const isShow = payload !== null ? payload : !state.isAsideMobileExpanded

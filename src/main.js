@@ -40,3 +40,12 @@ router.afterEach(to => {
 })
 
 createApp(App).use(store).use(router).mount('#app')
+
+import Echo from 'laravel-echo'
+window.io = require('socket.io-client');
+
+window.Echo = new Echo({
+  broadcaster: 'socket.io',
+  host: `${window.location.hostname}:${window.location.port}`,
+  withCredentials: true,
+});

@@ -150,12 +150,10 @@ export default {
 
     store.dispatch('fetchStreamsStats');
     const stats = computed(() => {
-      const viewers = !isEmpty(store.state.streamsStats) ? store.state.streamsStats.find((stat) => stat.users === 'viewers')?.count : 0;
-      const guests = !isEmpty(store.state.streamsStats) ? store.state.streamsStats.find((stat) => stat.users === 'guests')?.count : 0;
       return {
-        'viewers': viewers,
-        'guests': guests,
-        'total': viewers + guests,
+        'viewers': store.getters.streamStatViewers,
+        'guests': store.getters.streamStatGuest,
+        'total': store.getters.streamStatTotal,
       }
     });
 
@@ -165,7 +163,18 @@ export default {
       intervalID.value = setInterval(() => store.dispatch('fetchStreamsStats'), intervalMinutes * 60 * 1000);
     }
 
-    startInterval()
+    const listenToEcho = () => {
+      const redisPrefix = 'interactive_social_media_wall_database_';
+
+      window.Echo.channel(`${redisPrefix}stream-stat-events`)
+        .listen('.streamStat.updated', (event) => {
+          console.log('StreamStatUpdatedEvent', event);
+          store.dispatch('fetchStreamsStats');
+        });
+    }
+
+    startInterval();
+    listenToEcho();
 
     return {
       clientBarItems,
