@@ -11,7 +11,7 @@ import JbButtons from '../../components/JbButtons.vue'
 import {useStore} from "vuex";
 import {baseUrl} from "@/router";
 
-const titleStack = ref(['Admin', 'Streams'])
+const titleStack = ref(['Admin', 'Social posts'])
 const store = useStore()
 store.dispatch('fetchStreams')
 
@@ -19,19 +19,19 @@ store.dispatch('fetchStreams')
 
 <template>
   <title-bar :title-stack="titleStack" />
-  <hero-bar>Streams</hero-bar>
+  <hero-bar>Social posts</hero-bar>
   <main-section>
 
     <card-component
       class="mb-6"
       has-table
     >
-      <streams-table checkable />
+<!--      <streams-table checkable />-->
       <jb-buttons>
         <jb-button
           color="info"
           label="Create"
-          :to="`${baseUrl}/streams/create`"
+          :to="`${baseUrl}/social-posts/create`"
         />
       </jb-buttons>
 

@@ -1,5 +1,8 @@
-import { createRouter, createWebHashHistory } from 'vue-router'
+import {createRouter, createWebHistory} from 'vue-router'
 import Home from '@/views/Home.vue'
+import SocialPostCreate from "@/views/social-posts/SocialPostCreate.vue";
+
+export const baseUrl = '/climbing-goose';
 
 const routes = [
   {
@@ -8,7 +11,7 @@ const routes = [
     meta: {
       title: 'Dashboard'
     },
-    path: '/',
+    path: baseUrl,
     name: 'home',
     component: Home
   },
@@ -16,7 +19,7 @@ const routes = [
     meta: {
       title: 'Media'
     },
-    path: '/media',
+    path: `${baseUrl}/media`,
     name: 'media',
     // route level code-splitting
     // this generates a separate chunk (about.[hash].js) for this route
@@ -27,7 +30,7 @@ const routes = [
     meta: {
       title: 'Streams'
     },
-    path: '/streams',
+    path: `${baseUrl}/streams`,
     name: 'streams',
     component: () => import(/* webpackChunkName: "streams" */ '../views/streams/Streams.vue')
   },
@@ -35,7 +38,7 @@ const routes = [
     meta: {
       title: 'Stream create'
     },
-    path: '/streams/create',
+    path: `${baseUrl}/streams/create`,
     name: 'streamCreate',
     component: () => import(/* webpackChunkName: "stream-create" */ '../views/streams/StreamCreate.vue')
   },
@@ -43,15 +46,31 @@ const routes = [
     meta: {
       title: 'Stream edit'
     },
-    path: '/streams/:streamId/edit',
+    path: `${baseUrl}/streams/:streamId/edit`,
     name: 'streamEdit',
     component: () => import(/* webpackChunkName: "stream-edit" */ '../views/streams/StreamEdit.vue')
   },
   {
     meta: {
+      title: 'Social posts'
+    },
+    path: `${baseUrl}/social-posts`,
+    name: 'socialPosts',
+    component: () => import('../views/social-posts/SocialPosts.vue'),
+  },
+  {
+    meta: {
+      title: 'Social post create'
+    },
+    path: `${baseUrl}/social-posts/create`,
+    name: 'socialPostCreate',
+    component: SocialPostCreate,
+  },
+  {
+    meta: {
       title: 'Tables'
     },
-    path: '/tables',
+    path: `${baseUrl}/tables`,
     name: 'tables',
     component: () => import(/* webpackChunkName: "tables" */ '@/views/Tables.vue')
   },
@@ -59,7 +78,7 @@ const routes = [
     meta: {
       title: 'Forms'
     },
-    path: '/forms',
+    path: `${baseUrl}/forms`,
     name: 'forms',
     component: () => import(/* webpackChunkName: "forms" */ '@/views/Forms.vue')
   },
@@ -67,7 +86,7 @@ const routes = [
     meta: {
       title: 'Profile'
     },
-    path: '/profile',
+    path: `${baseUrl}/profile`,
     name: 'profile',
     component: () => import(/* webpackChunkName: "profile" */ '@/views/Profile.vue')
   },
@@ -75,7 +94,7 @@ const routes = [
     meta: {
       title: 'Ui'
     },
-    path: '/ui',
+    path: `${baseUrl}/ui`,
     name: 'ui',
     component: () => import(/* webpackChunkName: "ui" */ '@/views/Ui.vue')
   },
@@ -83,7 +102,7 @@ const routes = [
     meta: {
       title: 'Responsive layout'
     },
-    path: '/responsive',
+    path: `${baseUrl}/responsive`,
     name: 'responsive',
     component: () => import(/* webpackChunkName: "responsive" */ '@/views/Responsive.vue')
   },
@@ -92,7 +111,7 @@ const routes = [
       title: 'Login',
       fullScreen: true
     },
-    path: '/login',
+    path: `${baseUrl}/login`,
     name: 'login',
     component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
   },
@@ -101,17 +120,17 @@ const routes = [
       title: 'Error',
       fullScreen: true
     },
-    path: '/error',
+    path: `${baseUrl}/error`,
     name: 'error',
     component: () => import(/* webpackChunkName: "error" */ '@/views/Error.vue')
   }
 ]
 
 const router = createRouter({
-  history: createWebHashHistory(),
+  history: createWebHistory(),
   routes,
-  scrollBehavior (to, from, savedPosition) {
-    return savedPosition || { top: 0 }
+  scrollBehavior(to, from, savedPosition) {
+    return savedPosition || {top: 0}
   }
 })
 

@@ -126,7 +126,6 @@ import CardComponent from '../components/CardComponent.vue'
 import CardTransactionBar from '../components/CardTransactionBar.vue'
 import CardClientBar from '../components/CardClientBar.vue'
 import TitleSubBar from '../components/TitleSubBar.vue'
-import {isEmpty} from "lodash";
 
 export default {
   setup() {

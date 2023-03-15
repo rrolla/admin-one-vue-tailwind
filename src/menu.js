@@ -10,30 +10,36 @@ import {
   mdiTelevisionGuide,
   mdiViewList
 } from '@mdi/js'
+import {baseUrl} from "@/router";
 
 export default [
   'General',
   [
     {
-      to: '/',
+      to: baseUrl,
       icon: mdiDesktopMac,
       label: 'Dashboard'
     },
     {
-      href: '/climbing-goose/feeds',
+      href: `/climbing-goose-legacy/feeds`,
       label: 'Feeds',
       icon: mdiMonitorShimmer,
       target: '_blank'
     },
     {
-      to: '/media',
+      to: `${baseUrl}/media`,
       icon: mdiViewList,
       label: 'Media'
     },
     {
-      to: '/streams',
+      to: `${baseUrl}/streams`,
       icon: mdiTelevisionGuide,
       label: 'Streams'
+    },
+    {
+      to: `${baseUrl}/social-posts`,
+      icon: mdiTelevisionGuide,
+      label: 'Social posts'
     },
     {
       href: '/',
