@@ -30,6 +30,7 @@ export default createStore({
     streams: {},
     stream: {},
     streamsStats: [],
+    socialPosts: {},
   },
 
   getters: {
@@ -73,6 +74,9 @@ export default createStore({
       state.streamsStats = streamsStats;
     },
 
+    UPDATE_SOCIAL_POSTS(state, socialPosts) {
+      state.socialPosts = socialPosts;
+    },
   },
 
   actions: {
@@ -159,7 +163,14 @@ export default createStore({
 
       return commit("UPDATE_STREAMS_STATS", response.data.data);
     },
+
+    async fetchSocialPosts ({commit}) {
+      const response = await axios.get(`/api/social-posts`, {withCredentials: true});
+
+      return commit("UPDATE_SOCIAL_POSTS", response.data);
+    },
   },
   modules: {
+
   }
 })

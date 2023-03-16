@@ -18,13 +18,14 @@ import {baseUrl} from "@/router";
 const titleStack = ref(['Admin', 'Social posts', 'Social post create'])
 const router = useRouter()
 const store = useStore()
+const generatingText = ref('Generate')
 
 const form = reactive({
     socialPost: {
         title: undefined,
         text: undefined,
+        ask_text: undefined,
         generated_text: undefined,
-        ask: undefined,
     },
 })
 
@@ -32,6 +33,7 @@ const submit = () => {
     const payload = {
         title: form.socialPost.title,
         text: form.socialPost.text,
+        ask_text: form.socialPost.ask_text,
         generated_text: form.socialPost.generated_text,
     };
 
@@ -41,15 +43,15 @@ const submit = () => {
 }
 
 const generate = () => {
+    generatingText.value = 'Generating...'
     const payload = {
-        prompt: form.socialPost.ask,
+        prompt: form.socialPost.ask_text,
     };
 
     axios.post(`/api/social-posts/ask-chat-gpt`, payload).then((response) => {
-        console.log('response', response)
-
+        generatingText.value = 'Generate'
         const message = response.data.choices[0].message.content
-
+        form.socialPost.generated_text = message
         form.socialPost.text = message
         // router.push({path: `${baseUrl}/streams`});
     });
@@ -79,9 +81,10 @@ const generate = () => {
 
             <field label="Enter some keywords to generate beautiful text">
                 <control
-                    v-model="form.socialPost.ask"
+                    v-model="form.socialPost.ask_text"
                     type="text"
                     autocomplete="on"
+                    placeholder="Ask chat gpt"
                     name="title"
                 />
             </field>
@@ -107,7 +110,7 @@ const generate = () => {
                 <jb-button
                     color="info"
                     outline
-                    label="Generate"
+                    :label="generatingText"
                     @click="generate"
                 />
                 <jb-button

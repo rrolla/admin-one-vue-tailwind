@@ -8,6 +8,7 @@ import JbButtons from '../../components/JbButtons.vue'
 import JbButton from '../../components/JbButton.vue'
 import ModalBox from '../../components/ModalBox.vue'
 import axios from 'axios'
+import {baseUrl} from "@/router";
 
 const confirmDelete = ref(null)
 const confirmDeleteId = ref(null)
@@ -150,7 +151,7 @@ const checked = (isChecked, client) => {
               color="info"
               :icon="mdiPencil"
               small
-              :to="`/streams/${stream.id}/edit`"
+              :to="`${baseUrl}/streams/${stream.id}/edit`"
             />
 <!--            <jb-button-->
 <!--              color="success"-->
