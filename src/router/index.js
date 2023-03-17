@@ -60,11 +60,19 @@ const routes = [
   },
   {
     meta: {
-      title: 'Social post create'
+      title: 'Create social post'
     },
     path: `${baseUrl}/social-posts/create`,
     name: 'socialPostCreate',
     component: SocialPostCreate,
+  },
+  {
+    meta: {
+      title: 'Edit social post'
+    },
+    path: `${baseUrl}/social-posts/:socialPostId/edit`,
+    name: 'socialPostEdit',
+    component: () => import(/* webpackChunkName: "stream-edit" */ '../views/social-posts/SocialPostEdit.vue')
   },
   {
     meta: {

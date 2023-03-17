@@ -1,5 +1,5 @@
 <script setup>
-import {reactive, ref} from 'vue'
+import {computed, reactive, ref} from 'vue'
 import {mdiBallot} from '@mdi/js'
 import MainSection from '../../components/MainSection.vue'
 import TitleBar from '../../components/TitleBar.vue'
@@ -10,23 +10,19 @@ import Control from '../../components/Control.vue'
 import Divider from '../../components/Divider.vue'
 import JbButton from '../../components/JbButton.vue'
 import JbButtons from '../../components/JbButtons.vue'
-import {useRouter} from 'vue-router'
+import {useRoute} from 'vue-router'
 import {useStore} from "vuex";
 import axios from 'axios'
-import {baseUrl} from "@/router";
 
-const titleStack = ref(['Admin', 'Social posts', 'Create social post'])
-const router = useRouter()
+const titleStack = ref(['Admin', 'Social posts', 'Edit social post'])
+const route = useRoute()
 const store = useStore()
-const generatingText = ref('Generate')
+
+const socialPostId = route.params.socialPostId;
+store.dispatch('fetchSocialPost', socialPostId)
 
 const form = reactive({
-    socialPost: {
-        title: undefined,
-        text: undefined,
-        ask_text: undefined,
-        generated_text: undefined,
-    },
+    socialPost: computed(() => store.state.socialPost),
 })
 
 const submit = () => {
@@ -37,31 +33,13 @@ const submit = () => {
         generated_text: form.socialPost.generated_text,
     };
 
-    axios.post(`/api/social-posts/`, payload).then((response) => {
-        // router.push({path: `${baseUrl}/streams`});
-    });
+    axios.patch(`/api/social-posts/${socialPostId}`, payload, {withCredentials: true});
 }
-
-const generate = () => {
-    generatingText.value = 'Generating...'
-    const payload = {
-        prompt: form.socialPost.ask_text,
-    };
-
-    axios.post(`/api/social-posts/ask-chat-gpt`, payload).then((response) => {
-        generatingText.value = 'Generate'
-        const message = response.data.choices[0].message.content
-        form.socialPost.generated_text = message
-        form.socialPost.text = message
-        // router.push({path: `${baseUrl}/streams`});
-    });
-}
-
 </script>
 
 <template>
     <title-bar :title-stack="titleStack"/>
-    <hero-bar>Create social post</hero-bar>
+    <hero-bar>Edit social post</hero-bar>
 
     <main-section>
         <card-component
@@ -108,15 +86,9 @@ const generate = () => {
 
             <jb-buttons>
                 <jb-button
-                    color="info"
-                    outline
-                    :label="generatingText"
-                    @click="generate"
-                />
-                <jb-button
                     type="submit"
                     color="info"
-                    label="Create"
+                    label="Update"
                 />
                 <jb-button
                     type="reset"
