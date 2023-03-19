@@ -1,6 +1,10 @@
-import { createStore } from 'vuex'
+import {createStore} from 'vuex'
 import axios from 'axios'
-import { darkModeKey } from '@/config.js'
+import {darkModeKey} from '@/config.js'
+import media from "@/store/modules/media";
+import stream from "@/store/modules/stream";
+import socialPost from "@/store/modules/socialPost";
+import notification from "@/store/modules/notification";
 
 export default createStore({
   state: {
@@ -26,28 +30,21 @@ export default createStore({
     clients: [],
     history: [],
 
-    media: {},
-    streams: {},
-    stream: {},
-    streamsStats: [],
-    socialPosts: {},
-    socialPost: {},
+    user: {},
   },
 
   getters: {
-    streamStatViewers: state => state.streamsStats.find((stat) => stat.users === 'viewers')?.count ?? 0,
-    streamStatGuest: state => state.streamsStats.find((stat) => stat.users === 'guests')?.count ?? 0,
-    streamStatTotal: (state, getters) => getters.streamStatViewers + getters.streamStatGuest,
+    authUser: (state) => state.user,
   },
 
   mutations: {
     /* A fit-them-all commit */
-    basic (state, payload) {
+    basic(state, payload) {
       state[payload.key] = payload.value
     },
 
     /* User */
-    user (state, payload) {
+    user(state, payload) {
       if (payload.name) {
         state.userName = payload.name
       }
@@ -59,33 +56,13 @@ export default createStore({
       }
     },
 
-    UPDATE_MEDIA(state, media) {
-      state.media = media;
-    },
-
-    UPDATE_STREAMS(state, streams) {
-      state.streams = streams;
-    },
-
-    UPDATE_STREAM(state, stream) {
-      state.stream = stream;
-    },
-
-    UPDATE_STREAMS_STATS(state, streamsStats) {
-      state.streamsStats = streamsStats;
-    },
-
-    UPDATE_SOCIAL_POSTS(state, socialPosts) {
-      state.socialPosts = socialPosts;
-    },
-
-    UPDATE_SOCIAL_POST(state, socialPost) {
-      state.socialPost = socialPost;
+    UPDATE_USER(state, user) {
+      state.user = user;
     },
   },
 
   actions: {
-    asideMobileToggle ({ commit, state }, payload = null) {
+    asideMobileToggle({commit, state}, payload = null) {
       const isShow = payload !== null ? payload : !state.isAsideMobileExpanded
 
       document.getElementById('app').classList[isShow ? 'add' : 'remove']('ml-60', 'lg:ml-0')
@@ -98,17 +75,17 @@ export default createStore({
       })
     },
 
-    asideLgToggle ({ commit, state }, payload = null) {
-      commit('basic', { key: 'isAsideLgActive', value: payload !== null ? payload : !state.isAsideLgActive })
+    asideLgToggle({commit, state}, payload = null) {
+      commit('basic', {key: 'isAsideLgActive', value: payload !== null ? payload : !state.isAsideLgActive})
     },
 
-    fullScreenToggle ({ commit, state }, value) {
-      commit('basic', { key: 'isFullScreen', value })
+    fullScreenToggle({commit, state}, value) {
+      commit('basic', {key: 'isFullScreen', value})
 
       document.documentElement.classList[value ? 'add' : 'remove']('full-screen')
     },
 
-    darkMode ({ commit, state }) {
+    darkMode({commit, state}) {
       const value = !state.darkMode
 
       document.documentElement.classList[value ? 'add' : 'remove']('dark')
@@ -121,7 +98,7 @@ export default createStore({
       })
     },
 
-    fetch ({ commit }, payload) {
+    fetch({commit}, payload) {
       axios
         .get(`data-sources/${payload}.json`)
         .then((r) => {
@@ -145,43 +122,23 @@ export default createStore({
         })
     },
 
-    async fetchMedia ({commit}) {
-      const response = await axios.get(`/api/media`, {withCredentials: true});
+    async fetchUser({commit}) {
+      const response = await axios.get(`/api/users/me`, {withCredentials: true});
+      const authUser = response.data.data;
 
-      return commit("UPDATE_MEDIA", response.data);
-    },
+      commit("UPDATE_USER", authUser);
 
-    async fetchStreams ({commit}) {
-      const response = await axios.get(`/api/streams`, {withCredentials: true});
-
-      return commit("UPDATE_STREAMS", response.data);
-    },
-
-    async fetchStream ({commit}, streamId) {
-      const response = await axios.get(`/api/streams/${streamId}`, {withCredentials: true});
-
-      return commit("UPDATE_STREAM", response.data.data);
-    },
-
-    async fetchStreamsStats ({commit}) {
-      const response = await axios.get(`/api/streams/stats`, {withCredentials: true});
-
-      return commit("UPDATE_STREAMS_STATS", response.data.data);
-    },
-
-    async fetchSocialPosts ({commit}) {
-      const response = await axios.get(`/api/social-posts`, {withCredentials: true});
-
-      return commit("UPDATE_SOCIAL_POSTS", response.data);
-    },
-
-    async fetchSocialPost ({commit}, socialPostId) {
-      const response = await axios.get(`/api/social-posts/${socialPostId}`, {withCredentials: true});
-
-      return commit("UPDATE_SOCIAL_POST", response.data.data);
+      commit('user', {
+        name: authUser.name,
+        email: authUser.email,
+        avatar: 'https://avatars.dicebear.com/api/avataaars/example.svg?options[top][]=shortHair&options[accessoriesChance]=93'
+      })
     },
   },
   modules: {
-
+    media,
+    stream,
+    socialPost,
+    notification,
   }
 })

@@ -14,22 +14,23 @@ import JbButtons from '../../components/JbButtons.vue'
 import {useRoute} from 'vue-router'
 import {useStore} from "vuex";
 import axios from 'axios'
+import {useLaravelError} from "@/composables/errors";
 
 const titleStack = ref(['Admin', 'Streams', 'Stream edit'])
 const route = useRoute()
 const store = useStore()
 
 const streamId = route.params.streamId;
-store.dispatch('fetchStream', streamId)
+store.dispatch('stream/fetchStream', streamId)
 // const stream = computed(() => store.state.stream)
 
 const form = reactive({
-  stream: computed(() => store.state.stream),
+  stream: computed(() => store.state.stream.stream),
 })
 
 const switches = reactive({
-  live_switch: computed(() =>  [form.stream.is_live ? 'live' : undefined]),
-  recording_switch: computed(() =>  [form.stream.is_recording ? 'recording' : undefined]),
+  live_switch: computed(() => [form.stream.is_live ? 'live' : undefined]),
+  recording_switch: computed(() => [form.stream.is_recording ? 'recording' : undefined]),
 })
 
 const changeLive = (element) => {
@@ -50,12 +51,16 @@ const submit = () => {
     is_recording: form.stream.is_recording,
   };
 
-  axios.patch(`/api/streams/${streamId}`, payload,{withCredentials: true});
+  axios.patch(`/api/streams/${streamId}`, payload, {withCredentials: true})
+    .then((response) => {
+      store.dispatch('notification/addNotification', {color: 'success', text: 'Stream atjaunota'})
+    })
+    .catch(useLaravelError);
 }
 </script>
 
 <template>
-  <title-bar :title-stack="titleStack" />
+  <title-bar :title-stack="titleStack"/>
   <hero-bar>Stream edit</hero-bar>
 
   <main-section>
@@ -92,7 +97,7 @@ const submit = () => {
         />
       </field>
 
-      <divider />
+      <divider/>
 
       <field
         label="Description"
@@ -125,7 +130,7 @@ const submit = () => {
         />
       </field>
 
-      <divider />
+      <divider/>
 
       <jb-buttons>
         <jb-button

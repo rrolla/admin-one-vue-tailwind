@@ -13,7 +13,7 @@ import JbButtons from '../../components/JbButtons.vue'
 import {useRouter} from 'vue-router'
 import {useStore} from "vuex";
 import axios from 'axios'
-import {baseUrl} from "@/router";
+import {useLaravelError} from "@/composables/errors";
 
 const titleStack = ref(['Admin', 'Social posts', 'Create social post'])
 const router = useRouter()
@@ -21,111 +21,113 @@ const store = useStore()
 const generatingText = ref('Generate')
 
 const form = reactive({
-    socialPost: {
-        title: undefined,
-        text: undefined,
-        ask_text: undefined,
-        generated_text: undefined,
-    },
+  socialPost: {
+    title: undefined,
+    text: undefined,
+    ask_text: undefined,
+    generated_text: undefined,
+  },
 })
 
 const submit = () => {
-    const payload = {
-        title: form.socialPost.title,
-        text: form.socialPost.text,
-        ask_text: form.socialPost.ask_text,
-        generated_text: form.socialPost.generated_text,
-    };
+  const payload = {
+    title: form.socialPost.title,
+    text: form.socialPost.text,
+    ask_text: form.socialPost.ask_text,
+    generated_text: form.socialPost.generated_text,
+  };
 
-    axios.post(`/api/social-posts/`, payload).then((response) => {
-        // router.push({path: `${baseUrl}/streams`});
-    });
+  axios.post(`/api/social-posts`, payload, {withCredentials: true})
+    .then((response) => {
+      store.dispatch('notification/addNotification', {color: 'success', text: 'Social post pievienota'})
+      // router.push({path: `${baseUrl}/streams`});
+    })
+    .catch(useLaravelError)
 }
 
 const generate = () => {
-    generatingText.value = 'Generating...'
-    const payload = {
-        prompt: form.socialPost.ask_text,
-    };
+  generatingText.value = 'Generating...'
+  const payload = {
+    prompt: form.socialPost.ask_text,
+  };
 
-    axios.post(`/api/social-posts/ask-chat-gpt`, payload).then((response) => {
-        generatingText.value = 'Generate'
-        const message = response.data.choices[0].message.content
-        form.socialPost.generated_text = message
-        form.socialPost.text = message
-        // router.push({path: `${baseUrl}/streams`});
-    });
+  axios.post(`/api/social-posts/ask-chat-gpt`, payload).then((response) => {
+    generatingText.value = 'Generate'
+    const message = response.data.choices[0].message.content
+    form.socialPost.generated_text = message
+    form.socialPost.text = message
+  }).catch(useLaravelError)
 }
 
 </script>
 
 <template>
-    <title-bar :title-stack="titleStack"/>
-    <hero-bar>Create social post</hero-bar>
+  <title-bar :title-stack="titleStack"/>
+  <hero-bar>Create social post</hero-bar>
 
-    <main-section>
-        <card-component
-            title=""
-            :icon="mdiBallot"
-            form
-            @submit.prevent="submit"
-        >
-            <field label="Title">
-                <control
-                    v-model="form.socialPost.title"
-                    type="text"
-                    autocomplete="on"
-                    name="title"
-                />
-            </field>
+  <main-section>
+    <card-component
+      title=""
+      :icon="mdiBallot"
+      form
+      @submit.prevent="submit"
+    >
+      <field label="Title">
+        <control
+          v-model="form.socialPost.title"
+          type="text"
+          autocomplete="on"
+          name="title"
+        />
+      </field>
 
-            <field label="Enter some keywords to generate beautiful text">
-                <control
-                    v-model="form.socialPost.ask_text"
-                    type="text"
-                    autocomplete="on"
-                    placeholder="Ask chat gpt"
-                    name="title"
-                />
-            </field>
+      <field label="Enter some keywords to generate beautiful text">
+        <control
+          v-model="form.socialPost.ask_text"
+          type="text"
+          autocomplete="on"
+          placeholder="Ask chat gpt"
+          name="title"
+        />
+      </field>
 
-            <divider/>
+      <divider/>
 
-            <field
-                label="Your text"
-                help="Your keywords. Max 255 characters"
-            >
-                <control
-                    v-model="form.socialPost.text"
-                    type="textarea"
-                    autocomplete="on"
-                    placeholder="Your text"
-                    name="description"
-                />
-            </field>
+      <field
+        label="Your text"
+        help="Your keywords. Max 255 characters"
+      >
+        <control
+          v-model="form.socialPost.text"
+          type="textarea"
+          autocomplete="on"
+          placeholder="Your text"
+          name="description"
+        />
+      </field>
 
-            <divider/>
+      <divider/>
 
-            <jb-buttons>
-                <jb-button
-                    color="info"
-                    outline
-                    :label="generatingText"
-                    @click="generate"
-                />
-                <jb-button
-                    type="submit"
-                    color="info"
-                    label="Create"
-                />
-                <jb-button
-                    type="reset"
-                    color="info"
-                    outline
-                    label="Reset"
-                />
-            </jb-buttons>
-        </card-component>
-    </main-section>
+      <jb-buttons>
+        <jb-button
+          color="info"
+          outline
+          :label="generatingText"
+          @click="generate"
+        />
+        <jb-button
+          type="submit"
+          color="info"
+          label="Create"
+        />
+        <jb-button
+          type="reset"
+          color="info"
+          outline
+          label="Reset"
+        />
+      </jb-buttons>
+    </card-component>
+  </main-section>
 
 </template>

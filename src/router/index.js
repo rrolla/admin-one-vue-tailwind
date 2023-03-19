@@ -28,6 +28,22 @@ const routes = [
   },
   {
     meta: {
+      title: 'Create media'
+    },
+    path: `${baseUrl}/media/create`,
+    name: 'mediaCreate',
+    component: () => import(/* webpackChunkName: "media-create" */ '../views/media/MediaCreate.vue')
+  },
+  {
+    meta: {
+      title: 'Edit media'
+    },
+    path: `${baseUrl}/media/:mediaId/edit`,
+    name: 'mediaEdit',
+    component: () => import(/* webpackChunkName: "media-edit" */ '../views/media/MediaEdit.vue')
+  },
+  {
+    meta: {
       title: 'Streams'
     },
     path: `${baseUrl}/streams`,
@@ -56,7 +72,7 @@ const routes = [
     },
     path: `${baseUrl}/social-posts`,
     name: 'socialPosts',
-    component: () => import('../views/social-posts/SocialPosts.vue'),
+    component: () => import(/* webpackChunkName: "social-posts" */ '../views/social-posts/SocialPosts.vue'),
   },
   {
     meta: {
@@ -64,7 +80,7 @@ const routes = [
     },
     path: `${baseUrl}/social-posts/create`,
     name: 'socialPostCreate',
-    component: SocialPostCreate,
+    component: () => import(/* webpackChunkName: "social-post-create" */ '../views/social-posts/SocialPostCreate.vue')
   },
   {
     meta: {
@@ -72,7 +88,7 @@ const routes = [
     },
     path: `${baseUrl}/social-posts/:socialPostId/edit`,
     name: 'socialPostEdit',
-    component: () => import(/* webpackChunkName: "stream-edit" */ '../views/social-posts/SocialPostEdit.vue')
+    component: () => import(/* webpackChunkName: "social-post-edit" */ '../views/social-posts/SocialPostEdit.vue')
   },
   {
     meta: {

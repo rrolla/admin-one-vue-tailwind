@@ -13,91 +13,96 @@ import JbButtons from '../../components/JbButtons.vue'
 import {useRoute} from 'vue-router'
 import {useStore} from "vuex";
 import axios from 'axios'
+import {useLaravelError} from "@/composables/errors";
 
 const titleStack = ref(['Admin', 'Social posts', 'Edit social post'])
 const route = useRoute()
 const store = useStore()
 
 const socialPostId = route.params.socialPostId;
-store.dispatch('fetchSocialPost', socialPostId)
+store.dispatch('socialPost/fetchSocialPost', socialPostId)
 
 const form = reactive({
-    socialPost: computed(() => store.state.socialPost),
+  socialPost: computed(() => store.state.socialPost.socialPost),
 })
 
 const submit = () => {
-    const payload = {
-        title: form.socialPost.title,
-        text: form.socialPost.text,
-        ask_text: form.socialPost.ask_text,
-        generated_text: form.socialPost.generated_text,
-    };
+  const payload = {
+    title: form.socialPost.title,
+    text: form.socialPost.text,
+    ask_text: form.socialPost.ask_text,
+    generated_text: form.socialPost.generated_text,
+  };
 
-    axios.patch(`/api/social-posts/${socialPostId}`, payload, {withCredentials: true});
+  axios.patch(`/api/social-posts/${socialPostId}`, payload, {withCredentials: true})
+    .then((response) => {
+      store.dispatch('notification/addNotification', {color: 'success', text: 'Social post atjaunota'})
+    })
+    .catch(useLaravelError);
 }
 </script>
 
 <template>
-    <title-bar :title-stack="titleStack"/>
-    <hero-bar>Edit social post</hero-bar>
+  <title-bar :title-stack="titleStack"/>
+  <hero-bar>Edit social post</hero-bar>
 
-    <main-section>
-        <card-component
-            title=""
-            :icon="mdiBallot"
-            form
-            @submit.prevent="submit"
-        >
-            <field label="Title">
-                <control
-                    v-model="form.socialPost.title"
-                    type="text"
-                    autocomplete="on"
-                    name="title"
-                />
-            </field>
+  <main-section>
+    <card-component
+      title=""
+      :icon="mdiBallot"
+      form
+      @submit.prevent="submit"
+    >
+      <field label="Title">
+        <control
+          v-model="form.socialPost.title"
+          type="text"
+          autocomplete="on"
+          name="title"
+        />
+      </field>
 
-            <field label="Enter some keywords to generate beautiful text">
-                <control
-                    v-model="form.socialPost.ask_text"
-                    type="text"
-                    autocomplete="on"
-                    placeholder="Ask chat gpt"
-                    name="title"
-                />
-            </field>
+      <field label="Enter some keywords to generate beautiful text">
+        <control
+          v-model="form.socialPost.ask_text"
+          type="text"
+          autocomplete="on"
+          placeholder="Ask chat gpt"
+          name="title"
+        />
+      </field>
 
-            <divider/>
+      <divider/>
 
-            <field
-                label="Your text"
-                help="Your keywords. Max 255 characters"
-            >
-                <control
-                    v-model="form.socialPost.text"
-                    type="textarea"
-                    autocomplete="on"
-                    placeholder="Your text"
-                    name="description"
-                />
-            </field>
+      <field
+        label="Your text"
+        help="Your keywords. Max 255 characters"
+      >
+        <control
+          v-model="form.socialPost.text"
+          type="textarea"
+          autocomplete="on"
+          placeholder="Your text"
+          name="description"
+        />
+      </field>
 
-            <divider/>
+      <divider/>
 
-            <jb-buttons>
-                <jb-button
-                    type="submit"
-                    color="info"
-                    label="Update"
-                />
-                <jb-button
-                    type="reset"
-                    color="info"
-                    outline
-                    label="Reset"
-                />
-            </jb-buttons>
-        </card-component>
-    </main-section>
+      <jb-buttons>
+        <jb-button
+          type="submit"
+          color="info"
+          label="Update"
+        />
+        <jb-button
+          type="reset"
+          color="info"
+          outline
+          label="Reset"
+        />
+      </jb-buttons>
+    </card-component>
+  </main-section>
 
 </template>

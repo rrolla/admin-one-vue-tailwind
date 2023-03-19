@@ -14,6 +14,8 @@ import JbButtons from '../../components/JbButtons.vue'
 import {useRouter} from 'vue-router'
 import {useStore} from "vuex";
 import axios from 'axios'
+import {baseUrl} from "@/router";
+import {useLaravelError} from "@/composables/errors";
 
 const titleStack = ref(['Admin', 'Streams', 'Stream create'])
 const router = useRouter()
@@ -31,8 +33,8 @@ const form = reactive({
 })
 
 const switches = reactive({
-  live_switch: computed(() =>  [form.stream.is_live ? 'live' : undefined]),
-  recording_switch: computed(() =>  [form.stream.is_recording ? 'recording' : undefined]),
+  live_switch: computed(() => [form.stream.is_live ? 'live' : undefined]),
+  recording_switch: computed(() => [form.stream.is_recording ? 'recording' : undefined]),
 })
 
 const changeLive = (element) => {
@@ -53,14 +55,17 @@ const submit = () => {
     is_recording: form.stream.is_recording,
   };
 
-  axios.post(`/api/streams/`, payload).then((response) => {
-    router.push({path: '/streams'});
-  });
+  axios.post(`/api/streams`, payload, {withCredentials: true})
+    .then((response) => {
+      store.dispatch('notification/addNotification', {color: 'success', text: 'Stream pievienota'})
+      router.push({path: `${baseUrl}/streams`});
+    })
+    .catch(useLaravelError);
 }
 </script>
 
 <template>
-  <title-bar :title-stack="titleStack" />
+  <title-bar :title-stack="titleStack"/>
   <hero-bar>Stream create</hero-bar>
 
   <main-section>
@@ -106,7 +111,7 @@ const submit = () => {
         />
       </field>
 
-      <divider />
+      <divider/>
 
       <field
         label="Description"
@@ -141,13 +146,13 @@ const submit = () => {
         />
       </field>
 
-      <divider />
+      <divider/>
 
       <jb-buttons>
         <jb-button
           type="submit"
           color="info"
-          label="Submit"
+          label="Create"
         />
         <jb-button
           type="reset"
