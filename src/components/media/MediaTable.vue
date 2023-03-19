@@ -71,8 +71,8 @@ const confirmedDelete = () => {
         v-if="checkable"
         @checked="checked($event, media)"
       />
-      <td class="image-cell" style="width: 64px;">
-        <img :src="media.poster" class="image" width="64" height="64" alt="media poster"/>
+      <td class="image-cel" style="padding: 0; width: 70px">
+        <img :src="media.poster" class="image" alt="media poster"/>
       </td>
       <td data-label="ID">
         {{ media.id }}

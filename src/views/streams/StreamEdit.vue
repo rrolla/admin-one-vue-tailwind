@@ -64,6 +64,9 @@ const submit = () => {
   <hero-bar>Stream edit</hero-bar>
 
   <main-section>
+
+    <img class="m-1" :src="form.stream.poster" alt="stream poster">
+
     <card-component
       title=""
       :icon="mdiBallot"

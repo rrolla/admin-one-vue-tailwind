@@ -147,19 +147,22 @@ export default {
     const darkMode = computed(() => store.state.darkMode)
     const matomo = reactive(window.matomo);
 
-    store.dispatch('fetchStreamsStats');
+    store.dispatch('stream/fetchStreamsStats');
     const stats = computed(() => {
       return {
-        'viewers': store.getters.streamStatViewers,
-        'guests': store.getters.streamStatGuest,
-        'total': store.getters.streamStatTotal,
+        'viewers': store.getters['stream/streamStatViewers'],
+        'guests': store.getters['stream/streamStatGuest'],
+        'total': store.getters['stream/streamStatTotal'],
       }
     });
 
     const intervalMinutes = 1;
     const intervalID = ref(null);
     const startInterval = () => {
-      intervalID.value = setInterval(() => store.dispatch('fetchStreamsStats'), intervalMinutes * 60 * 1000);
+      intervalID.value = setInterval(
+        () => store.dispatch('stream/fetchStreamsStats'),
+        intervalMinutes * 60 * 1000
+      );
     }
 
     const listenToEcho = () => {

@@ -69,8 +69,8 @@ const confirmedDelete = () => {
         v-if="checkable"
         @checked="checked($event, stream)"
       />
-      <td class="image-cell">
-        <img :src="stream.poster" class="image" width="64" height="64" alt="stream poster"/>
+      <td class="image-cel" style="padding: 0; width: 70px">
+        <img :src="stream.poster" class="image" alt="stream poster"/>
       </td>
       <td data-label="ID">
         {{ stream.id }}
