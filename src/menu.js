@@ -21,8 +21,13 @@ export default [
       label: 'Dashboard'
     },
     {
-      href: `/climbing-goose-legacy/feeds`,
+      to: `${baseUrl}/feeds`,
       label: 'Feeds',
+      icon: mdiMonitorShimmer,
+    },
+    {
+      href: `/climbing-goose-legacy/feeds`,
+      label: 'Legacy Feeds',
       icon: mdiMonitorShimmer,
       target: '_blank'
     },

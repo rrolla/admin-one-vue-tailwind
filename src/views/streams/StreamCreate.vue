@@ -17,7 +17,7 @@ import axios from 'axios'
 import {baseUrl} from "@/router";
 import {useLaravelError} from "@/composables/errors";
 
-const titleStack = ref(['Admin', 'Streams', 'Stream create'])
+const titleStack = ref(['Admin', 'Streams', 'Create stream'])
 const router = useRouter()
 const store = useStore()
 
@@ -66,7 +66,7 @@ const submit = () => {
 
 <template>
   <title-bar :title-stack="titleStack"/>
-  <hero-bar>Stream create</hero-bar>
+  <hero-bar>Create stream</hero-bar>
 
   <main-section>
     <card-component

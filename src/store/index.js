@@ -5,6 +5,8 @@ import media from "@/store/modules/media";
 import stream from "@/store/modules/stream";
 import socialPost from "@/store/modules/socialPost";
 import notification from "@/store/modules/notification";
+import feed from "@/store/modules/feed";
+import room from "@/store/modules/room";
 
 export default createStore({
   state: {
@@ -140,5 +142,7 @@ export default createStore({
     stream,
     socialPost,
     notification,
+    feed,
+    room,
   }
 })

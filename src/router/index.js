@@ -1,6 +1,5 @@
 import {createRouter, createWebHistory} from 'vue-router'
 import Home from '@/views/Home.vue'
-import SocialPostCreate from "@/views/social-posts/SocialPostCreate.vue";
 
 export const baseUrl = '/climbing-goose';
 
@@ -17,13 +16,29 @@ const routes = [
   },
   {
     meta: {
+      title: 'Feeds'
+    },
+    path: `${baseUrl}/feeds`,
+    name: 'feeds',
+    // route level code-splitting
+    // this generates a separate chunk (about.[hash].js) for this route
+    // which is lazy-loaded when the route is visited.
+    component: () => import(/* webpackChunkName: "feeds-list" */ '../views/feeds/Feeds.vue')
+  },
+  {
+    meta: {
+      title: 'Feed create'
+    },
+    path: `${baseUrl}/feeds/create`,
+    name: 'feedCreate',
+    component: () => import(/* webpackChunkName: "feed-create" */ '../views/feeds/FeedCreate.vue')
+  },
+  {
+    meta: {
       title: 'Media'
     },
     path: `${baseUrl}/media`,
     name: 'media',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
     component: () => import(/* webpackChunkName: "media-list" */ '../views/media/Media.vue')
   },
   {
