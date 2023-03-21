@@ -25,6 +25,10 @@ const props = defineProps({
     default: 'Done'
   },
   hasCancel: Boolean,
+  hasConfirm: {
+      type: Boolean,
+      default: true
+  },
   modelValue: {
     type: [String, Number, Boolean],
     default: null
@@ -74,6 +78,7 @@ const cancel = () => confirmCancel('cancel')
 
       <jb-buttons>
         <jb-button
+          v-if="hasConfirm"
           :label="buttonLabel"
           :color="button"
           @click="confirm"

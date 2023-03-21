@@ -1,5 +1,5 @@
 <script setup>
-import {computed} from 'vue'
+import {computed, ref} from 'vue'
 import {useStore} from 'vuex'
 import {mdiPencil, mdiTrashCan} from '@mdi/js'
 import CheckboxCell from '../../components/CheckboxCell.vue'
@@ -14,20 +14,22 @@ import {checked, checkedRows} from "@/composables/table";
 import {confirmDeleteModal, deleteModal, deleteModalReset} from "@/composables/delete";
 
 const props = defineProps({
-  checkable: Boolean
+    checkable: Boolean
 })
 const store = useStore()
 
+const showImage = ref(false)
+const modalImage = ref(undefined)
 store.dispatch('stream/fetchStreams')
 const items = computed(() => store.state.stream.streams)
 deleteModalReset()
 
 const confirmedDelete = () => {
-  axios.delete(`/api/streams/${deleteModal.id}`)
-    .then(() => {
-      store.dispatch('notification/addNotification', {color: 'success', text: 'Straume idzēsta'})
-      store.dispatch('stream/fetchStreams')
-    })
+    axios.delete(`/api/streams/${deleteModal.id}`)
+        .then(() => {
+            store.dispatch('notification/addNotification', {color: 'success', text: 'Straume idzēsta'})
+            store.dispatch('stream/fetchStreams')
+        })
 }
 </script>
 
@@ -69,9 +71,15 @@ const confirmedDelete = () => {
         v-if="checkable"
         @checked="checked($event, stream)"
       />
-      <td class="image-cel" style="padding: 0; width: 70px">
-        <img :src="stream.poster" class="image" alt="stream poster"/>
-      </td>
+        <td class="image-cel" style="padding: 0; width: 70px">
+            <img
+                v-if="stream.poster"
+                :src="stream.poster"
+                class="image cursor-image"
+                @click="showImage=true; modalImage=stream.poster"
+                alt="stream poster"
+            />
+        </td>
       <td data-label="ID">
         {{ stream.id }}
       </td>
@@ -133,13 +141,26 @@ const confirmedDelete = () => {
     </level>
   </div>
 
-  <modal-box
-    v-model="deleteModal.confirm"
-    title="Please confirm action"
-    button-label="Confirm"
-    has-cancel
-    @confirm="confirmedDelete"
-  >
-    <p>Really want to delete {{ deleteModal.title }}?</p>
-  </modal-box>
+    <modal-box
+        v-model="deleteModal.confirm"
+        title="Please confirm action"
+        button-label="Confirm"
+        has-cancel
+        @confirm="confirmedDelete"
+    >
+        <p>Really want to delete {{ deleteModal.title }}?</p>
+    </modal-box>
+    <modal-box
+        v-model="showImage"
+        title="Image"
+        button-label="Confirm"
+        :has-confirm="false"
+    >
+        <img :src="modalImage" class="image" alt="poster"/>
+    </modal-box>
 </template>
+<style lang="scss">
+.cursor-image {
+    cursor: pointer;
+}
+</style>

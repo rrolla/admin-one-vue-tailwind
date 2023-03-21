@@ -1,5 +1,5 @@
 <script setup>
-import {computed} from 'vue'
+import {computed, ref} from 'vue'
 import {useStore} from 'vuex'
 import {mdiTrashCan} from '@mdi/js'
 import CheckboxCell from '../../components/CheckboxCell.vue'
@@ -17,6 +17,8 @@ const props = defineProps({
 })
 const store = useStore()
 
+const showImage = ref(false)
+const modalImage = ref(undefined)
 store.dispatch('feed/fetchFeeds')
 const items = computed(() => store.state.feed.feeds)
 deleteModalReset()
@@ -69,15 +71,13 @@ const confirmedDelete = () => {
                 @checked="checked($event, feed)"
             />
             <td class="image-cel" style="padding: 0; width: 70px">
-
-                <a
-                    class="spotlight"
-                    :href="`/storage/feeds/${feed.file_id}`"
-                    target="_blank">
-                    <img v-if="feed.file_id" :src="`/storage/feeds/${feed.file_id}`" class="image" alt="feed poster"/>
-                </a>
-
-
+                <img
+                    v-if="feed.file_id"
+                    :src="`/storage/feeds/${feed.file_id}`"
+                    class="image cursor-image"
+                    @click="showImage=true; modalImage=`/storage/feeds/${feed.file_id}`"
+                    alt="feed poster"
+                />
             </td>
             <td data-label="ID">
                 {{ feed.id }}
@@ -151,4 +151,18 @@ const confirmedDelete = () => {
     >
         <p>Really want to delete {{ deleteModal.title }}?</p>
     </modal-box>
+
+    <modal-box
+        v-model="showImage"
+        title="Image"
+        button-label="Confirm"
+        :has-confirm="false"
+    >
+        <img :src="modalImage" class="image" alt="poster"/>
+    </modal-box>
 </template>
+<style lang="scss">
+.cursor-image {
+    cursor: pointer;
+}
+</style>
