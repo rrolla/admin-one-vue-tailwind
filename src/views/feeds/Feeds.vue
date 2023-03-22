@@ -40,6 +40,18 @@ const activeRoom = computed(() => store.state.room.activeRoom)
                 label="Create"
                 :to="`${baseUrl}/feeds/create`"
             />
+            <jb-button
+                color="warning"
+                label="Create warning"
+                outline
+                :to="`${baseUrl}/feeds/warning/create`"
+            />
+            <jb-button
+                color="danger"
+                label="Create ban"
+                outline
+                :to="`${baseUrl}/feeds/ban/create`"
+            />
         </jb-buttons>
 
     </main-section>

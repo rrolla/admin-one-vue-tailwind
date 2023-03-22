@@ -27,11 +27,27 @@ const routes = [
   },
   {
     meta: {
-      title: 'Feed create'
+      title: 'Create feed'
     },
     path: `${baseUrl}/feeds/create`,
     name: 'feedCreate',
     component: () => import(/* webpackChunkName: "feed-create" */ '../views/feeds/FeedCreate.vue')
+  },
+  {
+    meta: {
+      title: 'Create warning'
+    },
+    path: `${baseUrl}/feeds/warning/create`,
+    name: 'warningCreate',
+    component: () => import(/* webpackChunkName: "warning-create" */ '../views/feeds/WarningCreate.vue')
+  },
+  {
+    meta: {
+      title: 'Create ban'
+    },
+    path: `${baseUrl}/feeds/ban/create`,
+    name: 'banCreate',
+    component: () => import(/* webpackChunkName: "ban-create" */ '../views/feeds/BanCreate.vue')
   },
   {
     meta: {
