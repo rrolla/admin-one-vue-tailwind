@@ -35,6 +35,14 @@ const routes = [
   },
   {
     meta: {
+      title: 'Edit feed'
+    },
+    path: `${baseUrl}/feeds/:feedId/edit`,
+    name: 'feedEdit',
+    component: () => import(/* webpackChunkName: "feed-edit" */ '../views/feeds/FeedEdit.vue')
+  },
+  {
+    meta: {
       title: 'Create user penalty warning'
     },
     path: `${baseUrl}/user-penalties/warning/create`,

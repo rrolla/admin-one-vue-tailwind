@@ -1,7 +1,7 @@
 <script setup>
 import {computed, ref} from 'vue'
 import {useStore} from 'vuex'
-import {mdiTrashCan} from '@mdi/js'
+import {mdiPencil, mdiTrashCan} from '@mdi/js'
 import CheckboxCell from '../../components/CheckboxCell.vue'
 import Level from '../../components/Level.vue'
 import JbButtons from '../../components/JbButtons.vue'
@@ -11,6 +11,7 @@ import axios from 'axios'
 import {useTimeAgo} from "@vueuse/core";
 import {checked, checkedRows} from "@/composables/table";
 import {confirmDeleteModal, deleteModal, deleteModalReset} from "@/composables/delete";
+import {baseUrl} from "@/router";
 
 const props = defineProps({
     checkable: Boolean
@@ -110,12 +111,12 @@ const confirmedDelete = () => {
                     type="justify-start lg:justify-end"
                     no-wrap
                 >
-<!--                    <jb-button-->
-                    <!--                        color="info"-->
-                    <!--                        :icon="mdiPencil"-->
-                    <!--                        small-->
-                    <!--                        :to="`${baseUrl}/streams/${feed.id}/edit`"-->
-                    <!--                    />-->
+                    <jb-button
+                        color="info"
+                        :icon="mdiPencil"
+                        small
+                        :to="`${baseUrl}/feeds/${feed.id}/edit`"
+                    />
                     <!--            <jb-button-->
                     <!--              color="success"-->
                     <!--              :icon="mdiEye"-->
