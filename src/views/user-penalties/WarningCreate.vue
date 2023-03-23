@@ -16,7 +16,7 @@ import axios from 'axios'
 import {baseUrl} from "@/router";
 import {useLaravelError} from "@/composables/errors";
 
-const titleStack = ref(['Admin', 'Feeds', 'Create warning'])
+const titleStack = ref(['Admin', 'User penalties', 'Create warning'])
 const router = useRouter()
 const store = useStore()
 
@@ -25,43 +25,29 @@ store.dispatch('room/fetchActiveRoom')
 const activeRoom = computed(() => store.state.room.activeRoom)
 
 const form = reactive({
-    feed: {
+    userPenalty: {
         room_id: undefined,
         type: undefined,
         username: undefined,
-        name: undefined,
-        text: undefined,
-        show: undefined,
-        is_sticky: undefined,
+        message: undefined,
+        expires: undefined,
+        user_id: undefined,
     },
 })
-
-const switches = reactive({
-    show_switch: computed(() => [form.feed.show ? 'show' : undefined]),
-    is_sticky_switch: computed(() => [form.feed.is_sticky ? 'is_sticky' : undefined]),
-})
-
-const changeIsShow = (element) => {
-    form.feed.show = !form.feed.show;
-};
-const changeIsSticky = (element) => {
-    form.feed.is_sticky = !form.feed.is_sticky;
-};
 
 const submit = () => {
     const payload = {
         room_id: activeRoom.value.id,
-        type: form.feed.type,
-        username: form.feed.username,
-        name: form.feed.name,
-        text: form.feed.text,
-        show: form.feed.show,
-        is_sticky: form.feed.is_sticky,
+        type: 'warning',
+        username: form.userPenalty.username.label,
+        message: form.userPenalty.message,
+        expires: form.userPenalty.expires,
+        user_id: form.userPenalty.username.id,
     };
 
-    axios.post(`/api/feeds`, payload, {withCredentials: true})
+    axios.post(`/api/user-penalties/warning`, payload, {withCredentials: true})
         .then((response) => {
-            store.dispatch('notification/addNotification', {color: 'success', text: 'Ieraksts pievienots'})
+            store.dispatch('notification/addNotification', {color: 'success', text: 'Lietotājs brīdināts'})
             router.push({path: `${baseUrl}/feeds`});
         })
         .catch(useLaravelError);
@@ -78,7 +64,7 @@ const activeUsernames = computed(
 
 <template>
     <title-bar :title-stack="titleStack"/>
-    <hero-bar>Create warning</hero-bar>
+    <hero-bar>Create user penalty warning</hero-bar>
 
     <main-section>
         <card-component
@@ -89,7 +75,7 @@ const activeUsernames = computed(
         >
             <field label="Username">
                 <control
-                    v-model="form.feed.type"
+                    v-model="form.userPenalty.username"
                     type="select"
                     :options="activeUsernames"
                     autocomplete="on"
@@ -97,10 +83,9 @@ const activeUsernames = computed(
                 />
             </field>
 
-
             <field label="Message">
                 <control
-                    v-model="form.feed.type"
+                    v-model="form.userPenalty.message"
                     type="text"
                     autocomplete="on"
                     name="message"
@@ -109,7 +94,7 @@ const activeUsernames = computed(
 
             <field label="Expires">
                 <control
-                    v-model="form.feed.username"
+                    v-model="form.userPenalty.expires"
                     type="text"
                     autocomplete="on"
                     name="expires"

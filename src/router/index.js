@@ -35,19 +35,19 @@ const routes = [
   },
   {
     meta: {
-      title: 'Create warning'
+      title: 'Create user penalty warning'
     },
-    path: `${baseUrl}/feeds/warning/create`,
-    name: 'warningCreate',
-    component: () => import(/* webpackChunkName: "warning-create" */ '../views/feeds/WarningCreate.vue')
+    path: `${baseUrl}/user-penalties/warning/create`,
+    name: 'userPenaltyWarningCreate',
+    component: () => import(/* webpackChunkName: "user-penalty-warning-create" */ '../views/user-penalties/WarningCreate.vue')
   },
   {
     meta: {
-      title: 'Create ban'
+      title: 'Create user penalty ban'
     },
-    path: `${baseUrl}/feeds/ban/create`,
-    name: 'banCreate',
-    component: () => import(/* webpackChunkName: "ban-create" */ '../views/feeds/BanCreate.vue')
+    path: `${baseUrl}/user-penalties/ban/create`,
+    name: 'userPenaltyBanCreate',
+    component: () => import(/* webpackChunkName: "user-penalty-ban-create" */ '../views/user-penalties/BanCreate.vue')
   },
   {
     meta: {

@@ -44,13 +44,13 @@ const activeRoom = computed(() => store.state.room.activeRoom)
                 color="warning"
                 label="Create warning"
                 outline
-                :to="`${baseUrl}/feeds/warning/create`"
+                :to="`${baseUrl}/user-penalties/warning/create`"
             />
             <jb-button
                 color="danger"
                 label="Create ban"
                 outline
-                :to="`${baseUrl}/feeds/ban/create`"
+                :to="`${baseUrl}/user-penalties/ban/create`"
             />
         </jb-buttons>
 
