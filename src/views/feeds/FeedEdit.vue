@@ -54,9 +54,9 @@ const submit = () => {
         is_sticky: form.feed.is_sticky,
     };
 
-    axios.post(`/api/feeds`, payload, {withCredentials: true})
+    axios.patch(`/api/feeds/${feedId}`, payload, {withCredentials: true})
         .then((response) => {
-            store.dispatch('notification/addNotification', {color: 'success', text: 'Ieraksts pievienots'})
+            store.dispatch('notification/addNotification', {color: 'success', text: 'Ieraksts atjaunots'})
             router.push({path: `${baseUrl}/feeds`});
         })
         .catch(useLaravelError);

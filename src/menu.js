@@ -26,12 +26,6 @@ export default [
       icon: mdiMonitorShimmer,
     },
     {
-      href: `/climbing-goose-legacy/feeds`,
-      label: 'Legacy Feeds',
-      icon: mdiMonitorShimmer,
-      target: '_blank'
-    },
-    {
       to: `${baseUrl}/media`,
       icon: mdiViewList,
       label: 'Media'
