@@ -39,7 +39,11 @@ router.afterEach(to => {
   store.dispatch('fullScreenToggle', !!to.meta.fullScreen)
 })
 
-createApp(App).use(store).use(router).mount('#app')
+
+createApp(App)
+  .use(store)
+  .use(router)
+  .mount('#app')
 
 import Echo from 'laravel-echo'
 window.io = require('socket.io-client');

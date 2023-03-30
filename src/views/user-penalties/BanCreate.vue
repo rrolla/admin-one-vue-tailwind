@@ -15,6 +15,8 @@ import {useStore} from "vuex";
 import axios from 'axios'
 import {baseUrl} from "@/router";
 import {useLaravelError} from "@/composables/errors";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const titleStack = ref(['Admin', 'User penalties', 'Create ban'])
 const router = useRouter()
@@ -24,13 +26,23 @@ store.dispatch('room/fetchActiveRoom')
 
 const activeRoom = computed(() => store.state.room.activeRoom)
 
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
 const form = reactive({
     userPenalty: {
         room_id: undefined,
         type: undefined,
         username: undefined,
         message: undefined,
-        expires: undefined,
+        expires: new Date(Date.now() + 10 * 60 * 1000),
         user_id: undefined,
     },
 })
@@ -41,7 +53,7 @@ const submit = () => {
         type: 'banned',
         username: form.userPenalty.username.label,
         message: form.userPenalty.message,
-        expires: form.userPenalty.expires,
+        expires: formatDate(form.userPenalty.expires),
         user_id: form.userPenalty.username.id,
     };
 
@@ -92,14 +104,9 @@ const activeUsernames = computed(
                 />
             </field>
 
-            <field label="Expires">
-                <control
-                    v-model="form.userPenalty.expires"
-                    type="text"
-                    autocomplete="on"
-                    name="expires"
-                />
-            </field>
+          <field label="Expires">
+            <VueDatePicker v-model="form.userPenalty.expires" :min-date="new Date()" required/>
+          </field>
 
             <divider/>
 

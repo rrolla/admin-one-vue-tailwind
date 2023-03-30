@@ -15,6 +15,8 @@ import {useStore} from "vuex";
 import axios from 'axios'
 import {baseUrl} from "@/router";
 import {useLaravelError} from "@/composables/errors";
+import VueDatePicker from '@vuepic/vue-datepicker';
+import '@vuepic/vue-datepicker/dist/main.css'
 
 const titleStack = ref(['Admin', 'User penalties', 'Create warning'])
 const router = useRouter()
@@ -24,41 +26,51 @@ store.dispatch('room/fetchActiveRoom')
 
 const activeRoom = computed(() => store.state.room.activeRoom)
 
+const formatDate = (date) => {
+  const year = date.getFullYear();
+  const month = String(date.getMonth() + 1).padStart(2, '0');
+  const day = String(date.getDate()).padStart(2, '0');
+  const hours = String(date.getHours()).padStart(2, '0');
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const seconds = String(date.getSeconds()).padStart(2, '0');
+  return `${year}-${month}-${day} ${hours}:${minutes}:${seconds}`;
+};
+
 const form = reactive({
-    userPenalty: {
-        room_id: undefined,
-        type: undefined,
-        username: undefined,
-        message: undefined,
-        expires: undefined,
-        user_id: undefined,
-    },
+  userPenalty: {
+    room_id: undefined,
+    type: undefined,
+    username: undefined,
+    message: undefined,
+    expires: new Date(Date.now() + 10 * 60 * 1000),
+    user_id: undefined,
+  },
 })
 
 const submit = () => {
-    const payload = {
-        room_id: activeRoom.value.id,
-        type: 'warning',
-        username: form.userPenalty.username.label,
-        message: form.userPenalty.message,
-        expires: form.userPenalty.expires,
-        user_id: form.userPenalty.username.id,
-    };
+  const payload = {
+    room_id: activeRoom.value.id,
+    type: 'warning',
+    username: form.userPenalty.username.label,
+    message: form.userPenalty.message,
+    expires: formatDate(form.userPenalty.expires),
+    user_id: form.userPenalty.username.id,
+  };
 
     axios.post(`/api/user-penalties/warning`, payload, {withCredentials: true})
-        .then((response) => {
-            store.dispatch('notification/addNotification', {color: 'success', text: 'Lietotājs brīdināts'})
-            router.push({path: `${baseUrl}/feeds`});
-        })
-        .catch(useLaravelError);
+      .then((response) => {
+        store.dispatch('notification/addNotification', {color: 'success', text: 'Lietotājs brīdināts'})
+        router.push({path: `${baseUrl}/feeds`});
+      })
+      .catch(useLaravelError);
 }
 
 const findUserName = (user) => user.settings.find((setting) => setting.key === 'username').value
 
 const activeUsernames = computed(
-    () => activeRoom.value.users?.map(function (user) {
-        return {id: user.id, label: findUserName(user)}
-    })
+  () => activeRoom.value.users?.map(function (user) {
+    return {id: user.id, label: findUserName(user)}
+  })
 )
 </script>
 
@@ -80,6 +92,7 @@ const activeUsernames = computed(
                     :options="activeUsernames"
                     autocomplete="on"
                     name="username"
+                    required
                 />
             </field>
 
@@ -89,17 +102,13 @@ const activeUsernames = computed(
                     type="text"
                     autocomplete="on"
                     name="message"
+                    required
                 />
             </field>
 
-            <field label="Expires">
-                <control
-                    v-model="form.userPenalty.expires"
-                    type="text"
-                    autocomplete="on"
-                    name="expires"
-                />
-            </field>
+          <field label="Expires">
+            <VueDatePicker v-model="form.userPenalty.expires" :min-date="new Date()" required/>
+          </field>
 
             <divider/>
 
