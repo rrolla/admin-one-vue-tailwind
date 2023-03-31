@@ -1,5 +1,5 @@
 <script setup>
-import {computed, ref} from 'vue'
+import {computed, ref, watch} from 'vue'
 import {useStore} from 'vuex'
 import {mdiPencil, mdiTrashCan} from '@mdi/js'
 import CheckboxCell from '../../components/CheckboxCell.vue'
@@ -12,15 +12,47 @@ import {useTimeAgo} from "@vueuse/core";
 import {checked, checkedRows} from "@/composables/table";
 import {confirmDeleteModal, deleteModal, deleteModalReset} from "@/composables/delete";
 import {baseUrl} from "@/router";
+import {useRoute, useRouter} from 'vue-router'
+
+const store = useStore()
+const route = useRoute()
+const router = useRouter()
 
 const props = defineProps({
     checkable: Boolean
 })
-const store = useStore()
+const feedsRouteName = 'feeds'
+const paginatedRouteName = 'paginatedFeeds'
+
+
+let currentPage = Number(route.params.pageNumber) || 1
+
+watch(
+    () => route.params.pageNumber,
+    (newPage) => {
+        if (route.name === feedsRouteName || route.name === paginatedRouteName) {
+            currentPage = Number(newPage) || 1;
+            fetchFeeds();
+        }
+    }
+)
 
 const showImage = ref(false)
 const modalImage = ref(undefined)
-store.dispatch('feed/fetchFeeds')
+
+const fetchFeeds = () => {
+    store.dispatch('feed/fetchFeeds', currentPage);
+}
+
+fetchFeeds()
+const extractPageNumber = url => {
+    const urlParams = new URLSearchParams(url.split('?')[1]);
+    return parseInt(urlParams.get('page'));
+}
+const goToPage = (pageNumber) => {
+    router.push({name: pageNumber === 1 ? 'feeds' : 'paginatedFeeds', params: {pageNumber}});
+}
+
 const items = computed(() => store.state.feed.feeds)
 deleteModalReset()
 
@@ -104,7 +136,7 @@ const confirmedDelete = () => {
                 <small
                     class="text-gray-500 dark:text-gray-400"
                     :title="feed.updated_at"
-                >{{ useTimeAgo(feed.updated_at) }}</small>
+                >{{ useTimeAgo(feed.updated_at).value }}</small>
             </td>
             <td class="actions-cell">
                 <jb-buttons
@@ -135,11 +167,24 @@ const confirmedDelete = () => {
         </tbody>
     </table>
     <div class="table-pagination">
-        <level>
+        <level class="block">
             <jb-buttons>
-
+                <div
+                    v-for="link in items.meta?.links"
+                    :key="link.label"
+                    class="pagination-item"
+                >
+                    <jb-button
+                        :label="link.label"
+                        :active="link.active"
+                        @click="goToPage(extractPageNumber(link.url))"
+                        :disabled="!link.url"
+                    />
+                </div>
             </jb-buttons>
-            <small>Page {{ items.meta?.current_page }} of {{ items.meta?.last_page }}</small>
+            <small>
+                Page {{ items.meta?.current_page }} of {{ items.meta?.last_page }}
+            </small>
         </level>
     </div>
 

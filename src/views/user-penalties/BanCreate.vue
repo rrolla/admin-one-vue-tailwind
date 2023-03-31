@@ -65,13 +65,21 @@ const submit = () => {
         .catch(useLaravelError);
 }
 
-const findUserName = (user) => user.settings.find((setting) => setting.key === 'username').value
+const findUserName = (user) => {
+    const username = user.settings.find((setting) => setting.key === 'username').value
+    return ['.', '..', '...'].includes(username) ? null : username
+}
 
 const activeUsernames = computed(
-    () => activeRoom.value.users?.map(function (user) {
-        return {id: user.id, label: findUserName(user)}
-    })
+    () => activeRoom.value.users
+        ?.map(user => ({id: user.id, label: findUserName(user)}))
+        .filter(user => user.label !== null && user.label !== undefined)
 )
+const reset = () => {
+    form.userPenalty.username = null
+    form.userPenalty.message = null
+    form.userPenalty.expires = new Date(Date.now() + 10 * 60 * 1000)
+}
 </script>
 
 <template>
@@ -92,6 +100,7 @@ const activeUsernames = computed(
                     :options="activeUsernames"
                     autocomplete="on"
                     name="username"
+                    required
                 />
             </field>
 
@@ -101,6 +110,7 @@ const activeUsernames = computed(
                     type="text"
                     autocomplete="on"
                     name="message"
+                    required
                 />
             </field>
 
@@ -117,7 +127,7 @@ const activeUsernames = computed(
                     label="Create"
                 />
                 <jb-button
-                    type="reset"
+                    @click="reset()"
                     color="info"
                     outline
                     label="Reset"

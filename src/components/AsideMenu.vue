@@ -21,6 +21,8 @@ const isAsideMobileExpanded = computed(() => store.state.isAsideMobileExpanded)
 
 const isAsideLgActive = computed(() => store.state.isAsideLgActive)
 
+const activeRoom = computed(() => store.state.room.activeRoom)
+
 const asideLgClose = () => {
   store.dispatch('asideLgToggle', false)
 }
@@ -52,7 +54,7 @@ const menuClick = (event, item) => {
         />
       </nav-bar-item>
       <div class="flex-1 px-3">
-        <span>Admin</span> <b class="font-black">One</b>
+          {{ activeRoom.name }}
       </div>
     </div>
     <div>

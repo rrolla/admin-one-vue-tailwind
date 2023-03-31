@@ -8,12 +8,10 @@ import HeroBar from '../../components/HeroBar.vue'
 import JbButton from '../../components/JbButton.vue'
 import JbButtons from '../../components/JbButtons.vue'
 import {baseUrl} from "@/router";
-import {useStore} from "vuex";
+import store from '../../store'
 import FeedsTable from "@/components/feeds/FeedsTable.vue";
 
 const titleStack = ref(['Admin', 'Feeds'])
-const store = useStore()
-store.dispatch('room/fetchActiveRoom')
 
 const feedCount = computed(() => store.state.feed.feeds.meta?.total)
 const activeRoom = computed(() => store.state.room.activeRoom)

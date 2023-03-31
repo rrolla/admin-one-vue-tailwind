@@ -4,197 +4,202 @@ import Home from '@/views/Home.vue'
 export const baseUrl = '/climbing-goose';
 
 const routes = [
-  {
-    // Document title tag
-    // We combine it with defaultDocumentTitle set in `src/main.js` on router.afterEach hook
-    meta: {
-      title: 'Dashboard'
+    {
+        // Document title tag
+        // We combine it with defaultDocumentTitle set in `src/main.js` on router.afterEach hook
+        meta: {
+            title: 'Dashboard'
+        },
+        path: baseUrl,
+        name: 'home',
+        component: Home
     },
-    path: baseUrl,
-    name: 'home',
-    component: Home
-  },
-  {
-    meta: {
-      title: 'Feeds'
+    {
+        meta: {
+            title: 'Feeds',
+        },
+        path: `${baseUrl}/feeds`,
+        name: 'feeds',
+        component: () => import(/* webpackChunkName: "feeds-list" */ '../views/feeds/Feeds.vue'),
     },
-    path: `${baseUrl}/feeds`,
-    name: 'feeds',
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () => import(/* webpackChunkName: "feeds-list" */ '../views/feeds/Feeds.vue')
-  },
-  {
-    meta: {
-      title: 'Create feed'
+    {
+        meta: {
+            title: 'Feeds',
+        },
+        path: `${baseUrl}/feeds/page/:pageNumber`,
+        name: 'paginatedFeeds',
+        component: () => import(/* webpackChunkName: "feeds-list" */ '../views/feeds/Feeds.vue'),
     },
-    path: `${baseUrl}/feeds/create`,
-    name: 'feedCreate',
-    component: () => import(/* webpackChunkName: "feed-create" */ '../views/feeds/FeedCreate.vue')
-  },
-  {
-    meta: {
-      title: 'Edit feed'
+    {
+        meta: {
+            title: 'Create feed'
+        },
+        path: `${baseUrl}/feeds/create`,
+        name: 'feedCreate',
+        component: () => import(/* webpackChunkName: "feed-create" */ '../views/feeds/FeedCreate.vue')
     },
-    path: `${baseUrl}/feeds/:feedId/edit`,
-    name: 'feedEdit',
-    component: () => import(/* webpackChunkName: "feed-edit" */ '../views/feeds/FeedEdit.vue')
-  },
-  {
-    meta: {
-      title: 'Create user penalty warning'
+    {
+        meta: {
+            title: 'Edit feed'
+        },
+        path: `${baseUrl}/feeds/:feedId/edit`,
+        name: 'feedEdit',
+        component: () => import(/* webpackChunkName: "feed-edit" */ '../views/feeds/FeedEdit.vue')
     },
-    path: `${baseUrl}/user-penalties/warning/create`,
-    name: 'userPenaltyWarningCreate',
-    component: () => import(/* webpackChunkName: "user-penalty-warning-create" */ '../views/user-penalties/WarningCreate.vue')
-  },
-  {
-    meta: {
-      title: 'Create user penalty ban'
+    {
+        meta: {
+            title: 'Create user penalty warning'
+        },
+        path: `${baseUrl}/user-penalties/warning/create`,
+        name: 'userPenaltyWarningCreate',
+        component: () => import(/* webpackChunkName: "user-penalty-warning-create" */ '../views/user-penalties/WarningCreate.vue')
     },
-    path: `${baseUrl}/user-penalties/ban/create`,
-    name: 'userPenaltyBanCreate',
-    component: () => import(/* webpackChunkName: "user-penalty-ban-create" */ '../views/user-penalties/BanCreate.vue')
-  },
-  {
-    meta: {
-      title: 'Media'
+    {
+        meta: {
+            title: 'Create user penalty ban'
+        },
+        path: `${baseUrl}/user-penalties/ban/create`,
+        name: 'userPenaltyBanCreate',
+        component: () => import(/* webpackChunkName: "user-penalty-ban-create" */ '../views/user-penalties/BanCreate.vue')
     },
-    path: `${baseUrl}/media`,
-    name: 'media',
-    component: () => import(/* webpackChunkName: "media-list" */ '../views/media/Media.vue')
-  },
-  {
-    meta: {
-      title: 'Create media'
+    {
+        meta: {
+            title: 'Media'
+        },
+        path: `${baseUrl}/media`,
+        name: 'media',
+        component: () => import(/* webpackChunkName: "media-list" */ '../views/media/Media.vue')
     },
-    path: `${baseUrl}/media/create`,
-    name: 'mediaCreate',
-    component: () => import(/* webpackChunkName: "media-create" */ '../views/media/MediaCreate.vue')
-  },
-  {
-    meta: {
-      title: 'Edit media'
+    {
+        meta: {
+            title: 'Create media'
+        },
+        path: `${baseUrl}/media/create`,
+        name: 'mediaCreate',
+        component: () => import(/* webpackChunkName: "media-create" */ '../views/media/MediaCreate.vue')
     },
-    path: `${baseUrl}/media/:mediaId/edit`,
-    name: 'mediaEdit',
-    component: () => import(/* webpackChunkName: "media-edit" */ '../views/media/MediaEdit.vue')
-  },
-  {
-    meta: {
-      title: 'Streams'
+    {
+        meta: {
+            title: 'Edit media'
+        },
+        path: `${baseUrl}/media/:mediaId/edit`,
+        name: 'mediaEdit',
+        component: () => import(/* webpackChunkName: "media-edit" */ '../views/media/MediaEdit.vue')
     },
-    path: `${baseUrl}/streams`,
-    name: 'streams',
-    component: () => import(/* webpackChunkName: "streams" */ '../views/streams/Streams.vue')
-  },
-  {
-    meta: {
-      title: 'Stream create'
+    {
+        meta: {
+            title: 'Streams'
+        },
+        path: `${baseUrl}/streams`,
+        name: 'streams',
+        component: () => import(/* webpackChunkName: "streams" */ '../views/streams/Streams.vue')
     },
-    path: `${baseUrl}/streams/create`,
-    name: 'streamCreate',
-    component: () => import(/* webpackChunkName: "stream-create" */ '../views/streams/StreamCreate.vue')
-  },
-  {
-    meta: {
-      title: 'Stream edit'
+    {
+        meta: {
+            title: 'Stream create'
+        },
+        path: `${baseUrl}/streams/create`,
+        name: 'streamCreate',
+        component: () => import(/* webpackChunkName: "stream-create" */ '../views/streams/StreamCreate.vue')
     },
-    path: `${baseUrl}/streams/:streamId/edit`,
-    name: 'streamEdit',
-    component: () => import(/* webpackChunkName: "stream-edit" */ '../views/streams/StreamEdit.vue')
-  },
-  {
-    meta: {
-      title: 'Social posts'
+    {
+        meta: {
+            title: 'Stream edit'
+        },
+        path: `${baseUrl}/streams/:streamId/edit`,
+        name: 'streamEdit',
+        component: () => import(/* webpackChunkName: "stream-edit" */ '../views/streams/StreamEdit.vue')
     },
-    path: `${baseUrl}/social-posts`,
-    name: 'socialPosts',
-    component: () => import(/* webpackChunkName: "social-posts" */ '../views/social-posts/SocialPosts.vue'),
-  },
-  {
-    meta: {
-      title: 'Create social post'
+    {
+        meta: {
+            title: 'Social posts'
+        },
+        path: `${baseUrl}/social-posts`,
+        name: 'socialPosts',
+        component: () => import(/* webpackChunkName: "social-posts" */ '../views/social-posts/SocialPosts.vue'),
     },
-    path: `${baseUrl}/social-posts/create`,
-    name: 'socialPostCreate',
-    component: () => import(/* webpackChunkName: "social-post-create" */ '../views/social-posts/SocialPostCreate.vue')
-  },
-  {
-    meta: {
-      title: 'Edit social post'
+    {
+        meta: {
+            title: 'Create social post'
+        },
+        path: `${baseUrl}/social-posts/create`,
+        name: 'socialPostCreate',
+        component: () => import(/* webpackChunkName: "social-post-create" */ '../views/social-posts/SocialPostCreate.vue')
     },
-    path: `${baseUrl}/social-posts/:socialPostId/edit`,
-    name: 'socialPostEdit',
-    component: () => import(/* webpackChunkName: "social-post-edit" */ '../views/social-posts/SocialPostEdit.vue')
-  },
-  {
-    meta: {
-      title: 'Tables'
+    {
+        meta: {
+            title: 'Edit social post'
+        },
+        path: `${baseUrl}/social-posts/:socialPostId/edit`,
+        name: 'socialPostEdit',
+        component: () => import(/* webpackChunkName: "social-post-edit" */ '../views/social-posts/SocialPostEdit.vue')
     },
-    path: `${baseUrl}/tables`,
-    name: 'tables',
-    component: () => import(/* webpackChunkName: "tables" */ '@/views/Tables.vue')
-  },
-  {
-    meta: {
-      title: 'Forms'
+    {
+        meta: {
+            title: 'Tables'
+        },
+        path: `${baseUrl}/tables`,
+        name: 'tables',
+        component: () => import(/* webpackChunkName: "tables" */ '@/views/Tables.vue')
     },
-    path: `${baseUrl}/forms`,
-    name: 'forms',
-    component: () => import(/* webpackChunkName: "forms" */ '@/views/Forms.vue')
-  },
-  {
-    meta: {
-      title: 'Profile'
+    {
+        meta: {
+            title: 'Forms'
+        },
+        path: `${baseUrl}/forms`,
+        name: 'forms',
+        component: () => import(/* webpackChunkName: "forms" */ '@/views/Forms.vue')
     },
-    path: `${baseUrl}/profile`,
-    name: 'profile',
-    component: () => import(/* webpackChunkName: "profile" */ '@/views/Profile.vue')
-  },
-  {
-    meta: {
-      title: 'Ui'
+    {
+        meta: {
+            title: 'Profile'
+        },
+        path: `${baseUrl}/profile`,
+        name: 'profile',
+        component: () => import(/* webpackChunkName: "profile" */ '@/views/Profile.vue')
     },
-    path: `${baseUrl}/ui`,
-    name: 'ui',
-    component: () => import(/* webpackChunkName: "ui" */ '@/views/Ui.vue')
-  },
-  {
-    meta: {
-      title: 'Responsive layout'
+    {
+        meta: {
+            title: 'Ui'
+        },
+        path: `${baseUrl}/ui`,
+        name: 'ui',
+        component: () => import(/* webpackChunkName: "ui" */ '@/views/Ui.vue')
     },
-    path: `${baseUrl}/responsive`,
-    name: 'responsive',
-    component: () => import(/* webpackChunkName: "responsive" */ '@/views/Responsive.vue')
-  },
-  {
-    meta: {
-      title: 'Login',
-      fullScreen: true
+    {
+        meta: {
+            title: 'Responsive layout'
+        },
+        path: `${baseUrl}/responsive`,
+        name: 'responsive',
+        component: () => import(/* webpackChunkName: "responsive" */ '@/views/Responsive.vue')
     },
-    path: `${baseUrl}/login`,
-    name: 'login',
-    component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
-  },
-  {
-    meta: {
-      title: 'Error',
-      fullScreen: true
+    {
+        meta: {
+            title: 'Login',
+            fullScreen: true
+        },
+        path: `${baseUrl}/login`,
+        name: 'login',
+        component: () => import(/* webpackChunkName: "login" */ '@/views/Login.vue')
     },
-    path: `${baseUrl}/error`,
-    name: 'error',
-    component: () => import(/* webpackChunkName: "error" */ '@/views/Error.vue')
-  }
+    {
+        meta: {
+            title: 'Error',
+            fullScreen: true
+        },
+        path: `${baseUrl}/error`,
+        name: 'error',
+        component: () => import(/* webpackChunkName: "error" */ '@/views/Error.vue')
+    },
 ]
 
 const router = createRouter({
-  history: createWebHistory(),
-  routes,
-  scrollBehavior(to, from, savedPosition) {
-    return savedPosition || {top: 0}
-  }
+    history: createWebHistory(),
+    routes,
+    scrollBehavior(to, from, savedPosition) {
+        return savedPosition || {top: 0}
+    }
 })
 
 export default router

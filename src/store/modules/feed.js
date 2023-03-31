@@ -16,8 +16,8 @@ const mutations = {
 }
 
 const actions = {
-    async fetchFeeds({commit}) {
-        const response = await axios.get(`/api/feeds`, {withCredentials: true});
+    async fetchFeeds({commit}, page = 1) {
+        const response = await axios.get(`/api/feeds?page=${page}`, {withCredentials: true});
 
         return commit("UPDATE_FEEDS", response.data);
     },

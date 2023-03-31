@@ -1,55 +1,61 @@
-import { createApp } from 'vue'
-
+import {computed, createApp, ref} from 'vue'
 import App from './App.vue'
 import router from './router'
 import store from './store'
-import { darkModeKey } from '@/config.js'
+import {darkModeKey} from '@/config.js'
 
 import './css/main.css'
 
 /* Fetch sample data */
 // store.dispatch('fetch', 'clients')
 // store.dispatch('fetch', 'history')
+let activeRoom = ref('')
+
+store.dispatch('room/fetchActiveRoom').then(() => {
+    activeRoom.value = store.state.room.activeRoom
+    const routeTitle = router.currentRoute.value.meta?.title;
+    document.title = `${routeTitle} — ${activeRoom.value.name}`
+})
 
 /* Dark mode */
 const localStorageDarkModeValue = localStorage.getItem(darkModeKey)
 
 if ((localStorageDarkModeValue === null && window.matchMedia('(prefers-color-scheme: dark)').matches) || localStorageDarkModeValue === '1') {
-  store.dispatch('darkMode')
+    store.dispatch('darkMode')
 }
-
 /* Default title tag */
 const defaultDocumentTitle = 'Admin One Vue 3 Tailwind'
 
 /* Collapse mobile aside menu on route change */
 router.beforeEach(to => {
-  store.dispatch('asideMobileToggle', false)
-  store.dispatch('asideLgToggle', false)
+    store.dispatch('asideMobileToggle', false)
+    store.dispatch('asideLgToggle', false)
 })
 
 router.afterEach(to => {
-  /* Set document title from route meta */
-  if (to.meta && to.meta.title) {
-    document.title = `${to.meta.title} — ${defaultDocumentTitle}`
-  } else {
-    document.title = defaultDocumentTitle
-  }
+    /* Set document title from route meta */
+    if (to.meta && to.meta.title) {
+        document.title = `${to.meta.title} — ${activeRoom.value.name}`
+    } else {
+        document.title = defaultDocumentTitle
+    }
 
-  /* Full screen mode */
-  store.dispatch('fullScreenToggle', !!to.meta.fullScreen)
+    /* Full screen mode */
+    store.dispatch('fullScreenToggle', !!to.meta.fullScreen)
 })
 
 
 createApp(App)
-  .use(store)
-  .use(router)
-  .mount('#app')
+    .use(store)
+    .use(router)
+    .mount('#app')
 
 import Echo from 'laravel-echo'
+
 window.io = require('socket.io-client');
 
 window.Echo = new Echo({
-  broadcaster: 'socket.io',
-  host: `${window.location.hostname}:${window.location.port}`,
-  withCredentials: true,
+    broadcaster: 'socket.io',
+    host: `${window.location.hostname}:${window.location.port}`,
+    withCredentials: true,
 });

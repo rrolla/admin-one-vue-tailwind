@@ -82,7 +82,7 @@ const confirmedDelete = () => {
         <small
           class="text-gray-500 dark:text-gray-400"
           :title="socialPost.updated_at"
-        >{{ useTimeAgo(socialPost.updated_at) }}</small>
+        >{{ useTimeAgo(socialPost.updated_at).value }}</small>
       </td>
       <td class="actions-cell">
         <jb-buttons
