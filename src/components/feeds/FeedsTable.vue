@@ -63,6 +63,57 @@ const confirmedDelete = () => {
             store.dispatch('feed/fetchFeeds')
         })
 }
+const replaceMessageByIndex = (index, newMessage) => {
+    const messages = [...items.value.data];
+    messages.splice(index, 1, newMessage);
+    items.value.data = messages;
+}
+
+const pushNewItem = (newItem) => {
+    const messages = [...items.value.data];
+    console.log(messages)
+    if (messages.length >= 50) {
+        messages.pop();
+    }
+    messages.unshift(newItem);
+    items.value.data = messages;
+}
+
+const listenToEcho = () => {
+    const redisPrefix = 'interactive_social_media_wall_database_';
+    window.Echo.channel(`${redisPrefix}feed-event`)
+        .listen('.feed.updated', async (response) => {
+            const feedCreated = response?.feedCreated;
+            if (feedCreated && currentPage === 1) {
+                pushNewItem(feedCreated);
+            }
+
+            const feedUpdated = response?.feedUpdated;
+            if (feedUpdated) {
+                const foundIndex = items.value.data.findIndex(feed => feed.id === feedUpdated.id);
+                if (foundIndex >= 0) {
+                    replaceMessageByIndex(foundIndex, feedUpdated);
+                } else if (currentPage === 1) {
+                    pushNewItem(feedUpdated);
+                }
+            }
+
+            const feedDeleted = response?.feedDeleted;
+            if (feedDeleted) {
+                items.value.data = items.value.data.filter(item => item.id !== feedDeleted.id);
+            }
+
+            const feedReactionUpdated = response?.feedReactionUpdated;
+            if (feedReactionUpdated) {
+                const foundIndex = items.value.data.findIndex(feed => feed.id === feedReactionUpdated.feed.id);
+                if (foundIndex >= 0) {
+                    replaceMessageByIndex(foundIndex, feedReactionUpdated.feed);
+                }
+            }
+        })
+}
+listenToEcho()
+
 </script>
 
 <template>
