@@ -1,5 +1,4 @@
 <script setup>
-
 import {computed, ref, watch} from 'vue'
 import MainSection from '../../components/MainSection.vue'
 import CardComponent from '../../components/CardComponent.vue'
@@ -19,11 +18,13 @@ const feedsRouteName = 'feeds'
 const paginatedRouteName = 'paginatedFeeds'
 
 const titleStack = ref(['Admin', 'Feeds'])
+const buttonLabel = computed(() => webSocketWatcherActive.value ? 'off' : 'on');
 
 const feedCount = computed(() => store.state.feed.feeds.meta?.total)
 const activeRoom = computed(() => store.state.room.activeRoom)
 
 let currentPage = Number(route.params.pageNumber) || 1
+const webSocketWatcherActive = ref(false);
 
 watch(
     () => route.params.pageNumber,
@@ -34,9 +35,36 @@ watch(
     }
 )
 const fetchFeeds = () => {
-    console.log(currentPage)
     store.dispatch('feed/fetchFeeds', currentPage);
 }
+
+const listenToEcho = () => {
+    const redisPrefix = 'interactive_social_media_wall_database_';
+    const channel = window.Echo.channel(`${redisPrefix}feed-event`);
+
+    const stopListening = () => {
+        channel.stopListening('.feed.updated');
+    };
+
+    channel.listen('.feed.updated', async (response) => {
+        if (currentPage === 1) {
+            fetchFeeds();
+        }
+    });
+
+    return stopListening;
+};
+
+let stopListening;
+
+const toggleWebSocketWatcher = () => {
+    webSocketWatcherActive.value = !webSocketWatcherActive.value;
+    if (webSocketWatcherActive.value) {
+        stopListening = listenToEcho();
+    } else {
+        stopListening();
+    }
+};
 
 </script>
 
@@ -49,6 +77,13 @@ const fetchFeeds = () => {
             <jb-button
                 :icon="mdiReload"
                 @click="fetchFeeds"
+            />
+            <br>
+            <span class="font-normal text-lg">Toggle live feed update: </span>
+            <jb-button
+                :label="buttonLabel"
+                @click="toggleWebSocketWatcher"
+                class="toggle-btn"
             />
         </div>
     </hero-bar>
@@ -82,3 +117,12 @@ const fetchFeeds = () => {
 
     </main-section>
 </template>
+<style lang="scss">
+.toggle-btn{
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+    padding: 0px;
+    font-weight: normal;
+    margin-left: 10px;
+}
+</style>
