@@ -18,6 +18,7 @@ import {useLaravelError} from "@/composables/errors";
 const titleStack = ref(['Admin', 'Social posts', 'Edit social post'])
 const route = useRoute()
 const store = useStore()
+const generatingText = ref('Generate')
 
 const socialPostId = route.params.socialPostId;
 store.dispatch('socialPost/fetchSocialPost', socialPostId)
@@ -39,6 +40,20 @@ const submit = () => {
       store.dispatch('notification/addNotification', {color: 'success', text: 'Social post atjaunota'})
     })
     .catch(useLaravelError);
+}
+
+const generate = () => {
+    generatingText.value = 'Generating...'
+    const payload = {
+        prompt: form.socialPost.ask_text,
+    };
+
+    axios.post(`/api/social-posts/ask-chat-gpt`, payload).then((response) => {
+        generatingText.value = 'Generate'
+        const message = response.data.choices[0].message.content
+        form.socialPost.generated_text = message
+        form.socialPost.text = message
+    }).catch(useLaravelError)
 }
 </script>
 
@@ -95,6 +110,12 @@ const submit = () => {
           color="info"
           label="Update"
         />
+          <jb-button
+              color="info"
+              outline
+              :label="generatingText"
+              @click="generate"
+          />
         <jb-button
           type="reset"
           color="info"

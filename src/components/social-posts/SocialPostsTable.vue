@@ -19,6 +19,8 @@ const props = defineProps({
 })
 const store = useStore()
 
+checkedRows.value = []
+
 store.dispatch('socialPost/fetchSocialPosts')
 const items = computed(() => store.state.socialPost.socialPosts)
 deleteModalReset()

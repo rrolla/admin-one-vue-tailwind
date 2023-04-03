@@ -5,6 +5,10 @@ const props = defineProps({
   type: {
     type: String,
     default: 'td'
+  },
+  id: {
+    type: String,
+    required: false
   }
 })
 
@@ -26,6 +30,7 @@ watch(checked, newVal => {
       <input
         v-model="checked"
         type="checkbox"
+        :id="id"
       >
       <span class="check" />
     </label>

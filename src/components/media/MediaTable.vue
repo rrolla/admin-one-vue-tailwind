@@ -20,6 +20,8 @@ const props = defineProps({
 const store = useStore()
 const darkMode = computed(() => store.state.darkMode)
 
+checkedRows.value = []
+
 const showImage = ref(false)
 const modalImage = ref(undefined)
 store.dispatch('media/fetchMedia')

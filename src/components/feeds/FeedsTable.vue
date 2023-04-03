@@ -10,7 +10,7 @@ import ModalBox from '../../components/ModalBox.vue'
 import axios from 'axios'
 import {useTimeAgo} from "@vueuse/core";
 import {checked, checkedRows} from "@/composables/table";
-import {confirmDeleteModal, deleteModal, deleteModalReset} from "@/composables/delete";
+import {confirmDeleteModal, confirmMassDeleteModal, deleteModal, deleteModalReset} from "@/composables/delete";
 import {baseUrl} from "@/router";
 import {useRoute, useRouter} from 'vue-router'
 
@@ -21,16 +21,24 @@ const router = useRouter()
 const props = defineProps({
     checkable: Boolean
 })
+
+checkedRows.value = []
+
 const feedsRouteName = 'feeds'
 const paginatedRouteName = 'paginatedFeeds'
-
+const checkAllBtn = 'checkAllBtn'
 
 let currentPage = Number(route.params.pageNumber) || 1
+const allChecked = ref(false)
 
 watch(
     () => route.params.pageNumber,
     (newPage) => {
         if (route.name === feedsRouteName || route.name === paginatedRouteName) {
+            const checkAllBtn = document.getElementById('checkAllBtn')
+            checkAllBtn.checked = false;
+            allChecked.value = false;
+            checkedRows.value = []
             currentPage = Number(newPage) || 1;
             fetchFeeds();
         }
@@ -60,9 +68,45 @@ const confirmedDelete = () => {
     axios.delete(`/api/feeds/${deleteModal.id}`)
         .then(() => {
             store.dispatch('notification/addNotification', {color: 'success', text: 'Ieraksts idzēsts'})
-            store.dispatch('feed/fetchFeeds')
+            fetchFeeds()
+            checkedRows.value = []
         })
 }
+
+const confirmedMassDelete = () => {
+    axios.delete(`/api/feeds/`, {data: {feedIds: deleteModal.id}})
+        .then(() => {
+            store.dispatch('notification/addNotification', {color: 'success', text: 'Ieraksti dzesti'})
+            fetchFeeds()
+            checkedRows.value = []
+        })
+}
+
+const handleCheckboxChange = (event, item) => {
+    checked(event.target.checked, item);
+    const checkAllBtn = document.getElementById('checkAllBtn')
+
+    if (!event.target.checked) {
+        checkAllBtn.checked = false;
+        allChecked.value = false;
+    }
+};
+
+const checkAll = () => {
+    allChecked.value = !allChecked.value;
+    if (allChecked.value) {
+        checkedRows.value = items.value.data;
+    } else {
+        checkedRows.value = [];
+    }
+
+    items.value.data.forEach(item => {
+        const checkBox = document.getElementById(item.id);
+        if (checkBox) {
+            checkBox.checked = allChecked.value;
+        }
+    });
+};
 
 </script>
 
@@ -78,13 +122,27 @@ const confirmedDelete = () => {
     >
       {{ checkedRow.id }}
     </span>
+        <br>
+        <jb-button
+            class="mt-3 mb-3"
+            color="danger"
+            :icon="mdiTrashCan"
+            small
+            @click="confirmMassDeleteModal(checkedRows.map(row => row.id))"
+        />
     </div>
 
     <table>
         <thead>
         <tr>
-            <th v-if="checkable"/>
-            <th/>
+            <th>
+            <checkbox-cell
+                @change="checkAll"
+                :id="checkAllBtn"
+                class="check-all"
+            />
+            </th>
+            <th></th>
             <th>ID</th>
             <th>Type</th>
             <th>Name</th>
@@ -102,7 +160,8 @@ const confirmedDelete = () => {
         >
             <checkbox-cell
                 v-if="checkable"
-                @checked="checked($event, feed)"
+                @change="event => handleCheckboxChange(event, feed)"
+                :id="feed.id"
             />
             <td class="image-cel" style="padding: 0; width: 70px">
                 <img
@@ -194,7 +253,7 @@ const confirmedDelete = () => {
         title="Please confirm action"
         button-label="Confirm"
         has-cancel
-        @confirm="confirmedDelete"
+        @confirm="deleteModal.id.length > 1 ? confirmedMassDelete() : confirmedDelete()"
     >
         <p>Really want to delete {{ deleteModal.title }}?</p>
     </modal-box>
@@ -211,5 +270,8 @@ const confirmedDelete = () => {
 <style lang="scss">
 .cursor-image {
     cursor: pointer;
+}
+.check-all{
+    background-color: transparent !important;
 }
 </style>
